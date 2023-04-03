@@ -26,8 +26,14 @@ namespace Progetto_Questionario_Steelco.Controllers
 
         // POST api/<QuestionarioController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] Domanda domanda)
         {
+            bool risultato = DomandeLogic.PostDomanda(domanda);
+            if (risultato)
+            {
+                return Ok();
+            }
+            return Conflict();
         }
 
         // PUT api/<QuestionarioController>/5

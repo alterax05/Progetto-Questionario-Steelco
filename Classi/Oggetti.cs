@@ -2,12 +2,20 @@
 {
     public class Domanda
     {
-        public int? id;
-        public string? domanda;
+        public int? id { get; set; }
+        public string? domanda { get; set; }
+        public override bool Equals(object? obj)
+        {
+            if (obj is Domanda and not null)
+            {
+                return ((Domanda)obj).id == this.id;
+            }
+            else { return false; }
+        }
     }
     public class Risposta
     {
-        public int? id;
-        public bool? risposta;
+        public int? id { get; set; }
+        public bool? risposta { get; set; }
     }
 }
