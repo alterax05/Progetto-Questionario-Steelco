@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Progetto_Questionario_Steelco.Classi;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -6,35 +7,36 @@ namespace Progetto_Questionario_Steelco.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class QuestionarioController : ControllerBase
     {
-        // GET: api/<ValuesController>
+        // GET: api/<QuestionarioController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public List<Domanda> Get()
         {
-            return new string[] { "value1", "value2" };
+            List<Domanda> list = DomandeLogic.GetDomande();
+            return list;
         }
 
-        // GET api/<ValuesController>/5
+        // GET api/<QuestionarioController>/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST api/<ValuesController>
+        // POST api/<QuestionarioController>
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT api/<ValuesController>/5
+        // PUT api/<QuestionarioController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<ValuesController>/5
+        // DELETE api/<QuestionarioController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
