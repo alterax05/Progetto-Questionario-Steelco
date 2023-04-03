@@ -19,9 +19,17 @@ namespace Progetto_Questionario_Steelco.Controllers
 
         // GET api/<QuestionarioController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            Domanda? domanda = DomandeLogic.GetDomanda(id);
+            if (domanda != null)
+            {
+                return Ok(domanda);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // POST api/<QuestionarioController>
@@ -44,8 +52,16 @@ namespace Progetto_Questionario_Steelco.Controllers
 
         // DELETE api/<QuestionarioController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            if(DomandeLogic.DeleteDomanda(id))
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

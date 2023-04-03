@@ -24,6 +24,7 @@ namespace Progetto_Questionario_Steelco
             }
             else
             {
+                //Swagger per lo sviluppo delle API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }

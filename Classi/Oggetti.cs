@@ -10,7 +10,7 @@
             {
                 return ((Domanda)obj).id == this.id;
             }
-            else { return false; }
+            return false;
         }
     }
     public class Risposta
