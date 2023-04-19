@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using api_steelco.Classi;
+using Newtonsoft.Json;
 
 namespace api_steelco
 {
@@ -35,12 +36,12 @@ namespace api_steelco
         /// </summary>
         /// <param name="domanda">Domanda da inserire</param>
         /// <returns>Valore bool che rappresenta se la scrittura e' avvenuta con successo</returns>
-        public static bool PostDomanda(Domanda domanda)
-        {
+        public static bool PostDomanda(Domanda domanda, Risposta risposta)
+        {   
             List<Domanda> list = GetDomande();
             if (list.Contains(domanda)) return false;
             list.Add(domanda);
-            return ScritturaDomande(list);
+            return ScritturaDomande(list) && RisposteLogic.PostRisposta(risposta); ;
         }
         /// <summary>
         /// Metodo per la scrittura su file della domanda
@@ -72,7 +73,7 @@ namespace api_steelco
             if (domanda != null && list.Count > 0)
             {
                 list.Remove(domanda);
-                return ScritturaDomande(list);
+                return ScritturaDomande(list) && RisposteLogic.DeleteRisposta(id);
             }
             return false;
         }

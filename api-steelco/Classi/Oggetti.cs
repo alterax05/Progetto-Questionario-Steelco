@@ -2,8 +2,8 @@
 {
     public class Domanda
     {
-        public int? id { get; set; }
-        public string? domanda { get; set; }
+        public int id { get; set; }
+        public string domanda { get; set; }
         public override bool Equals(object? obj)
         {
             if (obj is Domanda and not null)
@@ -15,8 +15,16 @@
     }
     public class Risposta
     {
-        public int? id { get; set; }
-        public bool? risposta { get; set; }
+        public int id { get; set; }
+        public bool risposta { get; set; }
+        public override bool Equals(object? obj)
+        {
+            if (obj is Risposta and not null)
+            {
+                return ((Risposta)obj).id == this.id && ((Risposta)obj).risposta == this.risposta;
+            }
+            return false;
+        }
     }
     public class Utente
     {

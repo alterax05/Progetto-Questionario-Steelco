@@ -15,11 +15,7 @@ namespace api_steelco.Controllers
             List<Domanda> list = DomandeLogic.GetDomande();
             return list;
         }
-        public List<Risposta> Get()
-        {
-        public List<Risposta> list = RisposteLogic.GetRisposta();
 
-        }
         // GET api/<QuestionarioController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
@@ -37,21 +33,17 @@ namespace api_steelco.Controllers
 
         // POST api/<QuestionarioController>
         [HttpPost]
-        public IActionResult Post([FromBody] Domanda domanda)
+        public IActionResult Post([FromBody] Domanda domanda, [FromBody] Risposta risposta)
         {
-            bool risultato = DomandeLogic.PostDomanda(domanda);
-            if (risultato)
-            {
-                return Ok();
-            }
-            return Conflict();
+            return DomandeLogic.PostDomanda(domanda, risposta) ? Ok() : Conflict();
         }
 
-        //// PUT api/<QuestionarioController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT api/<QuestionarioController>/5
+        [HttpPut("{id}")]
+        public void Put([FromBody] Domanda domanda, [FromBody] Risposta risposta)
+        {
+
+        }
 
         // DELETE api/<QuestionarioController>/5
         [HttpDelete("{id}")]

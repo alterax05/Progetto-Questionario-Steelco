@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Progetto_Questionario_Steelco;
+using System.Security;
 using System.Xml.Linq;
 
 namespace api_steelco.Classi
@@ -70,6 +70,15 @@ namespace api_steelco.Classi
                 return ScritturaRisposte(list);
             }
             return false;
+        }
+        public static bool[] Verifica(Risposta[] risposte)
+        {
+            bool[] verifica = new bool[risposte.Length];
+            for (int i = 0; i < risposte.Length; i++)
+            {
+                verifica[i] = risposte.Equals(GetRisposte(risposte[i].id));
+            }
+            return verifica;
         }
     }
 }
