@@ -23,5 +23,13 @@
         public int id { get; set; }
         public string nome { get; set; }
         public string cognome { get; set; }
+        public override bool Equals(object? obj)
+        {
+            if (obj is Utente and not null)
+            {
+                return ((Utente)obj).id == this.id;
+            }
+            return false;
+        }
     }
 }

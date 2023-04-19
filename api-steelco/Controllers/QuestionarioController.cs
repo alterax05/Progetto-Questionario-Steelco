@@ -43,11 +43,11 @@ namespace api_steelco.Controllers
             return Conflict();
         }
 
-        // PUT api/<QuestionarioController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //// PUT api/<QuestionarioController>/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
         // DELETE api/<QuestionarioController>/5
         [HttpDelete("{id}")]

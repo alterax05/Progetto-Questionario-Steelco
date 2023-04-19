@@ -10,35 +10,45 @@ namespace api_steelco.Controllers
     {
         // GET: api/<UtentiController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public List<Utente> Get()
         {
-            return new string[] { "value1", "value2" };
+            return UtenteLogic.GetUtenti();
         }
 
         // GET api/<UtentiController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            Utente? utente = UtenteLogic.GetUtente(id);
+            if (utente != null)
+            {
+                return Ok(utente);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // POST api/<UtentiController>
         [HttpPost]
-        public void Post([FromBody] Utente utente)
+        public IActionResult Post([FromBody] Utente utente)
         {
-
+            return UtenteLogic.PostUtente(utente) ? Ok() : Conflict();
         }
 
-        // PUT api/<UtentiController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //// PUT api/<UtentiController>/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+
+        //}
 
         // DELETE api/<UtentiController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            return UtenteLogic.DeleteUtente(id) ? Ok() : NotFound();
         }
     }
 }

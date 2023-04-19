@@ -10,8 +10,14 @@ namespace api_steelco
         /// <returns> Lista di domande, potrebbe essere vuota</returns>
         public static List<Domanda> GetDomande()
         {
-            List<Domanda> list = JsonConvert.DeserializeObject<List<Domanda>>(File.ReadAllText("Domande.json")) ?? new List<Domanda>();
-            return list;
+            if (File.Exists("Database JSON/Domande.json"))
+            {
+                return JsonConvert.DeserializeObject<List<Domanda>>(File.ReadAllText("Database JSON/Domande.json")) ?? new List<Domanda>();
+            }
+            else
+            {
+                return new List<Domanda>();
+            }
         }
         /// <summary>
         /// Ottieni una domanda in base al suo id
@@ -32,10 +38,7 @@ namespace api_steelco
         public static bool PostDomanda(Domanda domanda)
         {
             List<Domanda> list = GetDomande();
-            if (list.Contains(domanda))
-            {
-                return false;
-            }
+            if (list.Contains(domanda)) return false;
             list.Add(domanda);
             return ScritturaDomande(list);
         }
@@ -44,14 +47,18 @@ namespace api_steelco
         /// </summary>
         /// <param name="list">Lista da scrivere</param>
         /// <returns>Valore bool che rappresenta se la scrittura e' avvenuta con successo</returns>
-        public static bool ScritturaDomande(List<Domanda> list)
+        private static bool ScritturaDomande(List<Domanda> list)
         {
-            if (File.Exists("Domande.json"))
+            if (!File.Exists("Database JSON/Domande.json"))
             {
-                File.WriteAllText("Domande.json", JsonConvert.SerializeObject(list));
+                return false;
+            }
+            try
+            {
+                File.WriteAllText("Database JSON/Domande.json", JsonConvert.SerializeObject(list));
                 return true;
             }
-            return false;
+            catch { return false; }
         }
         /// <summary>
         /// Rimuovi domanda in base all'id
@@ -62,7 +69,7 @@ namespace api_steelco
         {
             List<Domanda> list = GetDomande();
             Domanda? domanda = GetDomanda(id);
-            if (domanda != null)
+            if (domanda != null && list.Count > 0)
             {
                 list.Remove(domanda);
                 return ScritturaDomande(list);
