@@ -15,7 +15,11 @@ namespace api_steelco.Controllers
             List<Domanda> list = DomandeLogic.GetDomande();
             return list;
         }
+        public List<Risposta> Get()
+        {
+        public List<Risposta> list = RisposteLogic.GetRisposta();
 
+        }
         // GET api/<QuestionarioController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
