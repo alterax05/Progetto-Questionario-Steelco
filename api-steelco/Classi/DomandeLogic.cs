@@ -37,7 +37,7 @@ namespace Progetto_Questionario_Steelco.Classi
                 return false;
             }
             list.Add(domanda);
-            return ScritturaDomande(list); ;
+            return ScritturaDomande(list);
         }
         /// <summary>
         /// Metodo per la scrittura su file della domanda
