@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api-steelco", "api-steelco.csproj", "{EFC9E64E-75CA-4E2C-BB9C-7DCB47CD5F48}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api-steelco", "api-steelco\api-steelco.csproj", "{EFC9E64E-75CA-4E2C-BB9C-7DCB47CD5F48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
