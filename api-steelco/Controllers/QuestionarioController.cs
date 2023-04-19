@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Progetto_Questionario_Steelco.Classi;
+using System.Reflection.Metadata.Ecma335;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,7 +17,11 @@ namespace Progetto_Questionario_Steelco.Controllers
             List<Domanda> list = DomandeLogic.GetDomande();
             return list;
         }
+        public List<Risposta> Get()
+        {
+        public List<Risposta> list = RisposteLogic.GetRisposta();
 
+        }
         // GET api/<QuestionarioController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
@@ -48,6 +53,7 @@ namespace Progetto_Questionario_Steelco.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+
         }
 
         // DELETE api/<QuestionarioController>/5
