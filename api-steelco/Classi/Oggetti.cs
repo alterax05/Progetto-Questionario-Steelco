@@ -1,4 +1,4 @@
-﻿namespace Progetto_Questionario_Steelco
+﻿namespace api_steelco
 {
     public class Domanda
     {
@@ -17,5 +17,11 @@
     {
         public int? id { get; set; }
         public bool? risposta { get; set; }
+    }
+    public class Utente
+    {
+        public string nome { get; set; }
+        public string cognome { get; set; }
+        public int id { get; set; }
     }
 }
