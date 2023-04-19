@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Progetto_Questionario_Steelco.Classi;
-using System.Reflection.Metadata.Ecma335;
-
+using api_steelco;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Progetto_Questionario_Steelco.Controllers
+namespace api_steelco.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

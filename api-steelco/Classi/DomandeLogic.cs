@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Progetto_Questionario_Steelco.Classi
+namespace api_steelco
 {
     public class DomandeLogic
     {
