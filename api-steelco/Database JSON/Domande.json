@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "domanda": "domanda1"
+  },
+  {
+    "id": 2,
+    "domanda": "text"
+  },
+  {
+    "id": 3,
+    "domanda": "text"
+  },
+  {
+    "id": 12,
+    "domanda": "string"
+  }
+]

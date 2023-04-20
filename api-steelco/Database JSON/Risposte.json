@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "risposta" : true
+  },
+  {
+    "id": 2,
+    "risposta": true
+  },
+  {
+    "id": 3,
+    "risposta": true
+  },
+  {
+    "id": 12,
+    "risposta": false
+  }
+]

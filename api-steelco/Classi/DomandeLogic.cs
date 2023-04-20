@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Progetto_Questionario_Steelco.Classi
+namespace api_steelco
 {
     public class DomandeLogic
     {
@@ -10,8 +10,14 @@ namespace Progetto_Questionario_Steelco.Classi
         /// <returns> Lista di domande, potrebbe essere vuota</returns>
         public static List<Domanda> GetDomande()
         {
-            List<Domanda> list = JsonConvert.DeserializeObject<List<Domanda>>(File.ReadAllText("Domande.json")) ?? new List<Domanda>();
-            return list;
+            if (File.Exists("Database JSON/Domande.json"))
+            {
+                return JsonConvert.DeserializeObject<List<Domanda>>(File.ReadAllText("Database JSON/Domande.json")) ?? new List<Domanda>();
+            }
+            else
+            {
+                return new List<Domanda>();
+            }
         }
         /// <summary>
         /// Ottieni una domanda in base al suo id
@@ -29,29 +35,30 @@ namespace Progetto_Questionario_Steelco.Classi
         /// </summary>
         /// <param name="domanda">Domanda da inserire</param>
         /// <returns>Valore bool che rappresenta se la scrittura e' avvenuta con successo</returns>
-        public static bool PostDomanda(Domanda domanda)
-        {
+        public static bool PostDomanda(NuovaDomanda domanda)
+        {   
             List<Domanda> list = GetDomande();
-            if (list.Contains(domanda))
-            {
-                return false;
-            }
+            if (list.Contains(domanda)) return false;
             list.Add(domanda);
-            return ScritturaDomande(list);
+            return ScritturaDomande(list) && RisposteLogic.PostRisposta(domanda.risposta_corretta); ;
         }
         /// <summary>
         /// Metodo per la scrittura su file della domanda
         /// </summary>
         /// <param name="list">Lista da scrivere</param>
         /// <returns>Valore bool che rappresenta se la scrittura e' avvenuta con successo</returns>
-        public static bool ScritturaDomande(List<Domanda> list)
+        private static bool ScritturaDomande(List<Domanda> list)
         {
-            if (File.Exists("Domande.json"))
+            if (!File.Exists("Database JSON/Domande.json"))
             {
-                File.WriteAllText("Domande.json", JsonConvert.SerializeObject(list));
+                return false;
+            }
+            try
+            {
+                File.WriteAllText("Database JSON/Domande.json", JsonConvert.SerializeObject(list));
                 return true;
             }
-            return false;
+            catch { return false; }
         }
         /// <summary>
         /// Rimuovi domanda in base all'id
@@ -62,10 +69,10 @@ namespace Progetto_Questionario_Steelco.Classi
         {
             List<Domanda> list = GetDomande();
             Domanda? domanda = GetDomanda(id);
-            if (domanda != null)
+            if (domanda != null && list.Count > 0)
             {
                 list.Remove(domanda);
-                return ScritturaDomande(list);
+                return ScritturaDomande(list) && RisposteLogic.DeleteRisposta(id);
             }
             return false;
         }

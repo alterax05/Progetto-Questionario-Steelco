@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Progetto_Questionario_Steelco.Classi;
-
+using api_steelco;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Progetto_Questionario_Steelco.Controllers
+namespace api_steelco.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -34,34 +33,23 @@ namespace Progetto_Questionario_Steelco.Controllers
 
         // POST api/<QuestionarioController>
         [HttpPost]
-        public IActionResult Post([FromBody] Domanda domanda)
+        public IActionResult Post([FromBody] NuovaDomanda domanda)
         {
-            bool risultato = DomandeLogic.PostDomanda(domanda);
-            if (risultato)
-            {
-                return Ok();
-            }
-            return Conflict();
+            return DomandeLogic.PostDomanda(domanda) ? Ok() : Conflict();
         }
 
         // PUT api/<QuestionarioController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put([FromBody] Risposta risposta)
         {
+            return RisposteLogic.PutRisposta(risposta) ? Ok() : NotFound();
         }
 
         // DELETE api/<QuestionarioController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if(DomandeLogic.DeleteDomanda(id))
-            {
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
+            return DomandeLogic.DeleteDomanda(id) ? Ok() : NotFound();
         }
     }
 }
