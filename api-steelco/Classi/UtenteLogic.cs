@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace api_steelco
 {
@@ -75,6 +76,21 @@ namespace api_steelco
                 return ScritturaUtenti(list);
             }
             return false;
+        }
+        /// <summary>
+        /// Aggiunta delle risposte di un utente
+        /// </summary>
+        /// <param name="risposte">Le varie risposte che un utente ha dato</param>
+        /// <returns></returns>
+        public static bool PutRisposte(int id, Risposta[] risposte)
+        {
+            List<Utente> utenti = GetUtenti();
+            Utente? utente = (from item in utenti where item.id == id select item).FirstOrDefault();
+            if (utente == null) return false;
+            utente.risposte_date.Add(risposte);
+            utente.num_tentativi++;
+            utente.passato = RisposteLogic.UtentePassato(risposte);
+            return ScritturaUtenti(utenti);
         }
     }
 }

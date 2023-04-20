@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 
-namespace api_steelco.Classi
+namespace api_steelco
 {
     public class RisposteLogic
     {
@@ -71,6 +72,24 @@ namespace api_steelco.Classi
             }
             return false;
         }
+        /// <summary>
+        /// Aggiorna la risposta data una risposta in input
+        /// </summary>
+        /// <param name="nuova_risposta"></param>
+        /// <returns></returns>
+        public static bool PutRisposta(Risposta nuova_risposta)
+        {
+            List<Risposta> risposte = GetRisposte();
+            Risposta? risposta_da_sostituire = GetRisposte(nuova_risposta.id);
+            if (risposta_da_sostituire != null)
+            {
+                risposte.Remove(risposta_da_sostituire);
+                risposte.Add(nuova_risposta);
+                return ScritturaRisposte(risposte);
+            }
+            return false;
+            
+        }
         public static bool[] Verifica(Risposta[] risposte)
         {
             bool[] verifica = new bool[risposte.Length];
@@ -79,6 +98,15 @@ namespace api_steelco.Classi
                 verifica[i] = risposte.Equals(GetRisposte(risposte[i].id));
             }
             return verifica;
+        }
+        public static bool UtentePassato(Risposta[] risposte)
+        {
+            bool passato = true;
+            for (int i = 0; i < risposte.Length && !passato; i++)
+            {
+                passato = passato && risposte.Equals(GetRisposte(risposte[i].id));
+            }
+            return passato;
         }
     }
 }

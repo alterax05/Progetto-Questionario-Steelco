@@ -33,30 +33,23 @@ namespace api_steelco.Controllers
 
         // POST api/<QuestionarioController>
         [HttpPost]
-        public IActionResult Post([FromBody] Domanda domanda, [FromBody] Risposta risposta)
+        public IActionResult Post([FromBody] NuovaDomanda domanda)
         {
-            return DomandeLogic.PostDomanda(domanda, risposta) ? Ok() : Conflict();
+            return DomandeLogic.PostDomanda(domanda) ? Ok() : Conflict();
         }
 
         // PUT api/<QuestionarioController>/5
         [HttpPut("{id}")]
-        public void Put([FromBody] Domanda domanda, [FromBody] Risposta risposta)
+        public IActionResult Put([FromBody] Risposta risposta)
         {
-
+            return RisposteLogic.PutRisposta(risposta) ? Ok() : NotFound();
         }
 
         // DELETE api/<QuestionarioController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if(DomandeLogic.DeleteDomanda(id))
-            {
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
+            return DomandeLogic.DeleteDomanda(id) ? Ok() : NotFound();
         }
     }
 }

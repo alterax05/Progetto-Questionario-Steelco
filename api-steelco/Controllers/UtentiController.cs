@@ -20,14 +20,7 @@ namespace api_steelco.Controllers
         public IActionResult Get(int id)
         {
             Utente? utente = UtenteLogic.GetUtente(id);
-            if (utente != null)
-            {
-                return Ok(utente);
-            }
-            else
-            {
-                return NotFound();
-            }
+            return utente == null ? NotFound() : Ok(utente);
         }
 
         // POST api/<UtentiController>
@@ -37,12 +30,12 @@ namespace api_steelco.Controllers
             return UtenteLogic.PostUtente(utente) ? Ok() : Conflict();
         }
 
-        //// PUT api/<UtentiController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
+        // PUT api/<UtentiController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] Risposta[] risposte)
+        {
 
-        //}
+        }
 
         // DELETE api/<UtentiController>/5
         [HttpDelete("{id}")]
