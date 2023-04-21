@@ -6,20 +6,22 @@ namespace test_api
 {
     public class Tests
     {
-        private string password;
-        private string user;
         [SetUp]
         public void Setup()
         {
-            password = Environment.GetEnvironmentVariable("PASSWORD_DB")!;
-            user = Environment.GetEnvironmentVariable("USER_DB")!;
+        }
+        [Test]
+        public void TestEnviroment()
+        {
+            string password = Environment.GetEnvironmentVariable("PASSWORD_DB")!;
+            string user = Environment.GetEnvironmentVariable("USER_DB")!;
             Assert.That(string.IsNullOrEmpty(password) && string.IsNullOrEmpty(user), Is.False, "Password or user is null or empty");
         }
         [Test]
         public void TestConnection()
         {
-            //string password = Environment.GetEnvironmentVariable("PASSWORD_DB")!;
-            //string user = Environment.GetEnvironmentVariable("USER_DB")!;
+            string password = Environment.GetEnvironmentVariable("PASSWORD_DB")!;
+            string user = Environment.GetEnvironmentVariable("USER_DB")!;
 
             string connectionUri = $"mongodb+srv://{user}:{password}@steelcodb.pn8pfrs.mongodb.net/?retryWrites=true&w=majority";
 
