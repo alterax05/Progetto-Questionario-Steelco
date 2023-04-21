@@ -23,7 +23,7 @@ namespace test_api
             string password = Environment.GetEnvironmentVariable("PASSWORD_DB") ?? "JWlcOMT72bLSrGkA";
             string user = Environment.GetEnvironmentVariable("USER_DB") ?? "micheleporcellato";
 
-            string connectionUri = $"mongodb+srv://{user}:{password}@steelcodb.pn8pfrs.mongodb.net/?retryWrites=true&w=majority";
+            const string connectionUri = $"mongodb+srv://micheleporcellato:JWlcOMT72bLSrGkA@steelcodb.pn8pfrs.mongodb.net/?retryWrites=true&w=majority";
 
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
 
