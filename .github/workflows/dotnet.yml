@@ -25,4 +25,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      env: # Or as an environment variable
+        password: ${{ secrets.PASSWORD_DB }}
+        user: ${{ secrets.USER_DB }}
+      run: dotnet test -env:PASSWORD_DB="password" -env:USER_DB="user" --no-build --verbosity normal
