@@ -28,4 +28,4 @@ jobs:
       env: # Or as an environment variable
         password: ${{ secrets.PASSWORD_DB }}
         user: ${{ secrets.USER_DB }}
-      run: dotnet test -e PASSWORD_DB="$env:password" -e USER_DB="$env:user" --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal

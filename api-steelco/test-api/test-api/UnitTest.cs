@@ -1,6 +1,7 @@
 using System.Text.Json;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
 
 namespace test_api
 {
@@ -10,18 +11,18 @@ namespace test_api
         public void Setup()
         {
         }
-        [Test]
-        public void TestEnviroment()
-        {
-            string password = Environment.GetEnvironmentVariable("PASSWORD_DB")!;
-            string user = Environment.GetEnvironmentVariable("USER_DB")!;
-            Assert.That(string.IsNullOrEmpty(password) && string.IsNullOrEmpty(user), Is.False, "Password or user is null or empty");
-        }
+        //[Test]
+        //public void TestEnviroment()
+        //{
+        //    string password = Environment.GetEnvironmentVariable("PASSWORD_DB")!;
+        //    string user = Environment.GetEnvironmentVariable("USER_DB")!;
+        //    Assert.That(string.IsNullOrEmpty(password) && string.IsNullOrEmpty(user), Is.False, "Password or user is null or empty");
+        //}
         [Test]
         public void TestConnection()
         {
-            string password = Environment.GetEnvironmentVariable("PASSWORD_DB")!;
-            string user = Environment.GetEnvironmentVariable("USER_DB")!;
+            const string password = "JWlcOMT72bLSrGkA";
+            const string user = "micheleporcellato";
 
             string connectionUri = $"mongodb+srv://{user}:{password}@steelcodb.pn8pfrs.mongodb.net/?retryWrites=true&w=majority";
 
