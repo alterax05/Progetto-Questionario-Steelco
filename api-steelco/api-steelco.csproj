@@ -9,12 +9,17 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\Database JSON\**" />
+    <Compile Remove="test-api\**" />
     <Content Remove="Controllers\Database JSON\**" />
+    <Content Remove="test-api\**" />
     <EmbeddedResource Remove="Controllers\Database JSON\**" />
+    <EmbeddedResource Remove="test-api\**" />
     <None Remove="Controllers\Database JSON\**" />
+    <None Remove="test-api\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.19.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
