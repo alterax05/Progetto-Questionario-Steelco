@@ -20,10 +20,10 @@ namespace test_api
         [Test]
         public void TestConnection()
         {
-            string password = Environment.GetEnvironmentVariable("PASSWORD_DB") ?? "JWlcOMT72bLSrGkA";
-            string user = Environment.GetEnvironmentVariable("USER_DB") ?? "micheleporcellato";
+            string password = Environment.GetEnvironmentVariable("PASSWORD_DB")!;
+            string user = Environment.GetEnvironmentVariable("USER_DB")!;
 
-            const string connectionUri = $"mongodb+srv://micheleporcellato:JWlcOMT72bLSrGkA@steelcodb.pn8pfrs.mongodb.net/?retryWrites=true&w=majority";
+            string connectionUri = $"mongodb+srv://{user}:{password}@steelcodb.pn8pfrs.mongodb.net/?retryWrites=true&w=majority";
 
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
 
@@ -34,16 +34,16 @@ namespace test_api
             var client = new MongoClient(settings);
 
             // Send a ping to confirm a successful connection
+            bool pass = true;
             try
             {
                 var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-                Assert.Pass("Pinged your deployment. You successfully connected to MongoDB!");
             }
             catch (Exception ex)
             {
                 Assert.Fail(ex.Message);
             }
-
+            if (pass) Assert.Pass("Pinged your deployment. You successfully connected to MongoDB!");
         }
     }
 }
