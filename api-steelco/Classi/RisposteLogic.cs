@@ -1,112 +1,67 @@
-﻿using Newtonsoft.Json;
+﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
+using Dapper;
+using MySql.Data;
+using System.Collections.Immutable;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace api_steelco
 {
     public class RisposteLogic
     {
-        /// <summary>
-        /// Ottieni tutte risposte da file JSON
-        /// </summary>
-        /// <returns> Lista di risposte, potrebbe essere vuota</returns>
-        public static List<Risposta> GetRisposte()
+        private string _stringa_con;
+        public RisposteLogic(IConfiguration configuration)
         {
-            List<Risposta> list = JsonConvert.DeserializeObject<List<Risposta>>(File.ReadAllText("Risposte.json")) ?? new List<Risposta>();
-            return list;
+            _stringa_con = configuration.GetConnectionString("Default");
         }
         /// <summary>
-        /// Ottieni una risposta in base al suo id
+        /// Aggiorna la risposta nel database
         /// </summary>
-        /// <param name="id">ID Risposta</param>
-        /// <returns>Ritorna una risposta, potrebbe essere null</returns>
-        public static Risposta? GetRisposte(int id)
+        /// <param name="risposta"></param>
+        /// <returns>Numero di righe affette nel database</returns>
+        public int PutRisposta(Risposta risposta)
         {
-            List<Risposta> list = GetRisposte();
-            Risposta? ris = (from item in list where item.id == id select item).FirstOrDefault();
-            return ris;
+            using var con = new MySqlConnection(_stringa_con);
+            return con.Execute("UPDATE risposte SET risposta = @risposta WHERE id_domanda = @id_domanda", risposta);
         }
         /// <summary>
-        /// Carica una risposta nel file JSON
+        /// Verifica le risposte inviate dagli utenti e le aggiunge al databade
         /// </summary>
-        /// <param name="risposta">Risposta da inserire</param>
-        /// <returns>Valore bool che rappresenta se la scrittura e' avvenuta con successo</returns>
-        public static bool PostRisposta(Risposta risposta)
+        /// <param name="risposta_utente"></param>
+        /// <returns>True se l'utente è passato, altrimenti false</returns>
+        public bool VerificaRisposte(RisposteUtente risposta_utente)
         {
-            List<Risposta> list = GetRisposte();
-            if (list.Contains(risposta))
+            using var con = new MySqlConnection(_stringa_con);
+            string codice_fiscale = risposta_utente.codice_fiscale;
+
+            //Aggiungo a storico
+            foreach (var item in risposta_utente.lista)
             {
-                return false;
+                int id_domanda = item.id_domanda;
+                int id_risposta_corretta = con.QueryFirstOrDefault<int>("SELECT id_risposta_corretta FROM risposte WHERE id_domanda=@id_domanda", new { id_domanda });
+                bool risposta = item.risposta;
+                con.Execute("INSERT INTO storico (risposta, id_domanda, id_risposta_corretta, codice_fiscale) VALUES (@risposta, @id_domanda, @id_risposta_corretta, @codice_fiscale)", new { risposta, id_domanda, id_risposta_corretta, codice_fiscale });
             }
-            list.Add(risposta);
-            return ScritturaRisposte(list);
-        }
-        /// <summary>
-        /// Metodo per la scrittura su file della risposta
-        /// </summary>
-        /// <param name="list">Lista da scrivere</param>
-        /// <returns>Valore bool che rappresenta se la scrittura e' avvenuta con successo</returns>
-        public static bool ScritturaRisposte(List<Risposta> list)
-        {
-            if (File.Exists("Risposte.json"))
+
+            //Prendo la matrice di risposte
+            int max_domande = con.QueryFirstOrDefault<int>("SELECT max_domande FROM settings");
+            List<Confronto> confronti = con.Query<Confronto>("SELECT storico.risposta,  risposte.corretta FROM storico INNER JOIN risposte ON storico.id_risposta_corretta = risposte.id_risposta_corretta AND storico.codice_fiscale = @codice_fiscale ORDER BY storico.id_risposta_data DESC LIMIT @max_domande;", new { codice_fiscale, max_domande }).Cast<Confronto>().ToList();
+
+            //Confronto
+            int punteggio = max_domande;
+            foreach (var item in confronti)
             {
-                File.WriteAllText("Risposte.json", JsonConvert.SerializeObject(list));
-                return true;
+                if (item.risposta != item.corretta)
+                {
+                    punteggio--;
+                }
             }
-            return false;
-        }
-        /// <summary>
-        /// Rimuovi risposta in base all'id
-        /// </summary>
-        /// <param name="id">ID risposta</param>
-        /// <returns>Valore bool che rappresenta se la scrittura e' avvenuta con successo</returns>
-        public static bool DeleteRisposta(int id)
-        {
-            List<Risposta> list = GetRisposte();
-            Risposta? risposta = GetRisposte(id);
-            if (risposta != null)
-            {
-                list.Remove(risposta);
-                return ScritturaRisposte(list);
-            }
-            return false;
-        }
-        /// <summary>
-        /// Aggiorna la risposta data una risposta in input
-        /// </summary>
-        /// <param name="nuova_risposta"></param>
-        /// <returns></returns>
-        public static bool PutRisposta(Risposta nuova_risposta)
-        {
-            List<Risposta> risposte = GetRisposte();
-            Risposta? risposta_da_sostituire = GetRisposte(nuova_risposta.id);
-            if (risposta_da_sostituire != null)
-            {
-                risposte.Remove(risposta_da_sostituire);
-                risposte.Add(nuova_risposta);
-                return ScritturaRisposte(risposte);
-            }
-            return false;
-            
-        }
-        public static bool[] Verifica(Risposta[] risposte)
-        {
-            bool[] verifica = new bool[risposte.Length];
-            for (int i = 0; i < risposte.Length; i++)
-            {
-                verifica[i] = risposte.Equals(GetRisposte(risposte[i].id));
-            }
-            return verifica;
-        }
-        public static bool UtentePassato(Risposta[] risposte)
-        {
-            bool passato = true;
-            for (int i = 0; i < risposte.Length && !passato; i++)
-            {
-                passato = passato && risposte.Equals(GetRisposte(risposte[i].id));
-            }
-            return passato;
+            con.Execute("INSERT INTO punteggio (utente, punteggio, q_domande) VALUES (@codice_fiscale, @punteggio, @max_domande);", new { codice_fiscale, punteggio, max_domande });
+
+            return punteggio > (max_domande - 1);
         }
     }
 }

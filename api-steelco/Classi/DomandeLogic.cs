@@ -1,82 +1,71 @@
 ﻿using Newtonsoft.Json;
-using MongoDB.Driver;
-using MongoDB.Bson;
+using Dapper;
+using MySql.Data;
+using MySql.Data.MySqlClient;
 
 namespace api_steelco
 {
     public class DomandeLogic
     {
+        private string _stringa_con;
+        public DomandeLogic(IConfiguration configuration)
+        {
+            _stringa_con = configuration.GetConnectionString("Default");
+        }
+
         /// <summary>
-        /// Ottieni tutte domande da file JSON
+        /// Ottieni tutte domande dal database SQL
         /// </summary>
         /// <returns> Lista di domande, potrebbe essere vuota</returns>
-        public static List<Domanda> GetDomande()
+        public List<Domanda> GetDomande()
         {
-            if (File.Exists("Database JSON/Domande.json"))
-            {
-                return JsonConvert.DeserializeObject<List<Domanda>>(File.ReadAllText("Database JSON/Domande.json")) ?? new List<Domanda>();
-            }
-            else
-            {
-                return new List<Domanda>();
-            }
+            using var con = new MySqlConnection(_stringa_con);
+            return con.Query<Domanda>("SELECT * FROM domande").ToList() ?? new List<Domanda>();
         }
         /// <summary>
         /// Ottieni una domanda in base al suo id
         /// </summary>
-        /// <param name="id">ID Domanda</param>
+        /// <param name = "id_domanda" > ID Domanda</param>
         /// <returns>Ritorna una domanda, potrebbe essere null</returns>
-        public static Domanda? GetDomanda(int id)
+        public Domanda? GetDomanda(int id_domanda)
         {
-            List<Domanda> list = GetDomande();
-            Domanda? ris = (from item in list where item.id == id select item).FirstOrDefault();
-            return ris;
+            using var con = new MySqlConnection(_stringa_con);
+            return con.QueryFirstOrDefault<Domanda>("SELECT * FROM domande WHERE id_domanda = @id_domanda", new { id_domanda });
         }
         /// <summary>
-        /// Carica una domanda nel file JSON
+        /// Carica una domanda e la risposta risposta nel database
         /// </summary>
         /// <param name="domanda">Domanda da inserire</param>
         /// <returns>Valore bool che rappresenta se la scrittura e' avvenuta con successo</returns>
-        public static bool PostDomanda(NuovaDomanda domanda)
-        {   
-            List<Domanda> list = GetDomande();
-            if (list.Contains(domanda)) return false;
-            list.Add(domanda);
-            return ScritturaDomande(list) && RisposteLogic.PostRisposta(domanda.risposta_corretta); ;
-        }
-        /// <summary>
-        /// Metodo per la scrittura su file della domanda
-        /// </summary>
-        /// <param name="list">Lista da scrivere</param>
-        /// <returns>Valore bool che rappresenta se la scrittura e' avvenuta con successo</returns>
-        private static bool ScritturaDomande(List<Domanda> list)
+        public int PostDomanda(NuovaDomanda domanda)
         {
-            if (!File.Exists("Database JSON/Domande.json"))
-            {
-                return false;
-            }
-            try
-            {
-                File.WriteAllText("Database JSON/Domande.json", JsonConvert.SerializeObject(list));
-                return true;
-            }
-            catch { return false; }
+            using var con = new MySqlConnection(_stringa_con);
+            string sql = @"INSERT INTO domande (testo_italiano, testo_inglese) VALUES (@testo_italiano, @testo_inglese); INSERT INTO risposte (id_domanda, risposta) VALUES (LAST_INSERT_ID(), @risposta);";
+            return con.Execute(sql, domanda);
         }
         /// <summary>
-        /// Rimuovi domanda in base all'id
+        /// Aggiora il testo della domanda
+        /// </summary>
+        /// <param name="domanda"></param>
+        /// <returns></returns>
+        public int PutDomanda(Domanda domanda)
+        {
+            using var con = new MySqlConnection(_stringa_con);
+            return con.Execute("UPDATE domande SET testo_inglese = @testo_inglese, testo_italiano=@testo_italiano WHERE id_domanda = @id_domanda", domanda);
+        }
+        /// <summary>
+        /// Rimuovi domanda, e la risposta risposta in base all'id
         /// </summary>
         /// <param name="id">ID domanda</param>
-        /// <returns>Valore bool che rappresenta se la scrittura e' avvenuta con successo</returns>
-        public static bool DeleteDomanda(int id)
+        /// <returns>Righe affette</returns>
+        public int DeleteDomanda(int id_domanda)
         {
-            List<Domanda> list = GetDomande();
-            Domanda? domanda = GetDomanda(id);
-            if (domanda != null && list.Count > 0)
-            {
-                list.Remove(domanda);
-                return ScritturaDomande(list) && RisposteLogic.DeleteRisposta(id);
-            }
-            return false;
+            int righe_affette = 0;
+            using var con = new MySqlConnection(_stringa_con);
+            righe_affette += con.Execute("DELETE FROM risposte WHERE id_domanda = @id_domanda", new { id_domanda });
+            righe_affette += con.Execute("DELETE FROM storico WHERE id_domanda = @id_domanda", new { id_domanda });
+            righe_affette += con.Execute("DELETE FROM domande WHERE id_domanda = @id_domanda", new { id_domanda });
+            return righe_affette;
         }
     }
 }

@@ -8,40 +8,66 @@ namespace api_steelco.Controllers
     [ApiController]
     public class UtentiController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+        private UtenteLogic u;
+        public UtentiController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            u = new UtenteLogic(_configuration);
+        }
+
         // GET: api/<UtentiController>
         [HttpGet]
         public List<Utente> Get()
         {
-            return UtenteLogic.GetUtenti();
+            return u.GetUtenti();
         }
 
-        // GET api/<UtentiController>/5
+        // GET: api/<UtentiController>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Get(string id)
         {
-            Utente? utente = UtenteLogic.GetUtente(id);
-            return utente == null ? NotFound() : Ok(utente);
+            var utente = u.GetUtente(id);
+            if (utente is null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(utente);
+            }
         }
 
         // POST api/<UtentiController>
         [HttpPost]
         public IActionResult Post([FromBody] Utente utente)
         {
-            return UtenteLogic.PostUtente(utente) ? Ok() : Conflict();
-        }
-
-        // PUT api/<UtentiController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Risposta[] risposte)
-        {
-
+            try
+            {
+                u.PostUtente(utente);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return Conflict(e.Message);
+                throw;
+            }
         }
 
         // DELETE api/<UtentiController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
-            return UtenteLogic.DeleteUtente(id) ? Ok() : NotFound();
+            try
+            {
+                u.DeleteUtente(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+                throw;
+            }
         }
     }
 }
