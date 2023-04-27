@@ -1,73 +1,67 @@
 ﻿
+using Org.BouncyCastle.Asn1;
+using System.Reflection.Metadata;
+using System.Security.Policy;
+
 namespace api_steelco
 {
     public class Domanda
     {
-        public int id { get; set; }
-        public string domanda { get; set; }
-        public Domanda(int id, string domanda)
-        {
-            this.id = id;
-            this.domanda = domanda;
-        }
+        public int id_domanda { get; set; }
+        public string testo_italiano { get; set; }
+        public string testo_inglese { get; set; }
         public override bool Equals(object? obj)
         {
             if (obj is Domanda and not null)
             {
-                return ((Domanda)obj).id == this.id;
+                return ((Domanda)obj).id_domanda == this.id_domanda;
             }
             return false;
         }
     }
-    public class NuovaDomanda:Domanda
+    public class NuovaDomanda
     {
-        public Risposta risposta_corretta { get; set; }
-        public NuovaDomanda(int id, string domanda, Risposta risposta) : base(id, domanda)
-        {
-            this.risposta_corretta = risposta;
-        }
+        public string testo_italiano { get; set; }
+        public string testo_inglese { get; set; }
+        public bool corretta { get; set; }
+
     }
     public class Risposta
     {
-        public int id { get; set; }
+        public int id_domanda { get; set; }
         public bool risposta { get; set; }
-        public Risposta(int id, bool risposta)
-        {
-            this.id = id;
-            this.risposta = risposta;
-        }
+    }
+    public class RisposteUtente
+    {
+        public string codice_fiscale { get; set; }
+
+        public List<Risposta> lista { get; set; }
+    }
+    public class Confronto
+    {
+        public bool risposta { get; set; }
+        public bool corretta { get; set; }
+
+    }
+    public class RispostaCorretta
+    {
+        public int id_risposta_corretta { get; set; }
+        public int id_domanda { get; set; }
+        public bool corretta { get; set; }
         public override bool Equals(object? obj)
         {
-            if (obj is Risposta and not null)
+            if (obj is RispostaCorretta and not null)
             {
-                return ((Risposta)obj).id == this.id && ((Risposta)obj).risposta == this.risposta;
+                return ((RispostaCorretta)obj).id_risposta_corretta == this.id_risposta_corretta && ((RispostaCorretta)obj).corretta == this.corretta;
             }
             return false;
         }
     }
     public class Utente
     {
-        public int id { get; set; }
+        public string codice_fiscale { get; set; }
         public string nome { get; set; }
         public string cognome { get; set; }
-        public int num_tentativi { get; set; }
-        public List<Risposta[]> risposte_date { get; set; }
-        public bool? passato { get; set; }
-        public Utente(int id, string nome, string cognome)
-        {
-            this.id = id;
-            this.nome = nome;
-            this.cognome = cognome;
-            num_tentativi = 0;
-            risposte_date = new List<Risposta[]>();
-        }
-        public override bool Equals(object? obj)
-        {
-            if (obj is Utente and not null)
-            {
-                return ((Utente)obj).id == this.id;
-            }
-            return false;
-        }
+        public string password { get; set; }
     }
 }
