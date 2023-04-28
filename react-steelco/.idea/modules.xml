@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../progetto-react-classe4/.idea/razzzzooo.iml" filepath="$PROJECT_DIR$/../../progetto-react-classe4/.idea/razzzzooo.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/react-steelco.iml" filepath="$PROJECT_DIR$/.idea/react-steelco.iml" />
     </modules>
   </component>
