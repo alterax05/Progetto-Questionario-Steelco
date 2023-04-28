@@ -1,10 +1,6 @@
 import React from 'react';
 
-interface id_video {
-    id?: string;
-}
-
-const YoutubeVideoEncoder: React.FC<any> = ({id = '-1wcilQ58hI'}) => {
+const YoutubeVideoEncoder: React.FC<{id?: string}> = ({id = "-1wcilQ58hI"}) => {
     return (
         <>
             <div
@@ -18,7 +14,6 @@ const YoutubeVideoEncoder: React.FC<any> = ({id = '-1wcilQ58hI'}) => {
                         width="560"
                         height="315"
                 >
-
                 </iframe>
             </div>
         </>

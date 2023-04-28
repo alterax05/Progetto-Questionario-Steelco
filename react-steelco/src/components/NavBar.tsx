@@ -27,7 +27,8 @@ const NavBar: React.FC<NavBarProps> = ({nomi_italiano, nomi_inglese, links, isIt
                     <button data-bs-toggle="collapse" className="navbar-toggler" data-bs-target="#navcol-3">
                         <span
                             className="visually-hidden">{isItalian ? navigazione_italiano : navigazione_inglese}</span>
-                        <span className="navbar-toggler-icon"></span></button>
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
                     <div className="collapse navbar-collapse" id="navcol-3">
                         <ul className="navbar-nav mx-auto">
                             {nomi.map((item, index) => (
