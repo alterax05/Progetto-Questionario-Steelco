@@ -23,6 +23,7 @@ const DomandeAdmin: FC<{ url: string }> = ({url}) => {
         const POST_headers = {headers: {'Content-Type': 'application/json'}};
         for (let id of ids) {
             const response = await axios.delete(url + "api/Utenti/" + id, POST_headers);
+            console.log(response.data);
             if (response.status !== 200) {
                 alert("Errore");
             }
@@ -50,6 +51,8 @@ const DomandeAdmin: FC<{ url: string }> = ({url}) => {
         if (!trovato && checked) { // Utente selezionato ma non trovato
             ids.push(id);
         }
+        setIds(ids_temp);
+        console.log(ids)
     }
 
     return (

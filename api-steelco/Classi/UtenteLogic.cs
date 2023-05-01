@@ -77,9 +77,10 @@ namespace api_steelco
         /// <returns></returns>
         public void DeleteUtente(string id)
         {
-            string codice_fiscale = id;
             using var con = new MySqlConnection(_stringa_con);
-            con.Execute("DELETE FROM utenti WHERE codice_fiscale=@codice_fiscale", new { codice_fiscale });
+            con.Execute("DELETE FROM storico WHERE codice_fiscale=@id", new { id });
+            con.Execute("DELETE FROM punteggio WHERE utente=@id",new {id});
+            con.Execute("DELETE FROM utenti WHERE codice_fiscale=@id", new { id });
         }
     }
 }
