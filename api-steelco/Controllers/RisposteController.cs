@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,13 +16,14 @@ namespace api_steelco.Controllers
             r = new RisposteLogic(_configuration);
         }
 
-        // POST api/<RisposteController>
-        [HttpPost]
-        public IActionResult Post([FromBody] RisposteUtente risposta)
+        // GET: api/<RisposteController>
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
             try
             {
-                return Ok(r.VerificaRisposte(risposta));
+                int max_domande = await Task.Run(() => r.GetMaxDomande());
+                return Ok(max_domande);
             }
             catch (Exception e)
             {
@@ -32,19 +32,37 @@ namespace api_steelco.Controllers
             }
         }
 
-        // PUT api/<RisposteController>
-        [HttpPut]
-        public IActionResult PutRisposta([FromBody] Risposta risposta)
+        // POST api/<RisposteController>
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] RisposteUtente risposta)
         {
             try
             {
-                return Ok("{Righe_affette: " + r.PutRisposta(risposta) + "}");
+                bool result = await Task.Run(() => r.VerificaRisposteAsync(risposta));
+                return Ok(result);
             }
             catch (Exception e)
             {
                 return NotFound(e.Message);
                 throw;
             }
+        }
+
+
+        // PUT api/<RisposteController>
+        [HttpPut]
+        public IActionResult PutRisposta([FromBody] Risposta risposta)
+        {
+            try
+            {
+                r.PutRisposta(risposta);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+                throw;
+            }
+            return Ok();
         }
     }
 }

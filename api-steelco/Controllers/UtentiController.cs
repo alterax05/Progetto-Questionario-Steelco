@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using api_steelco;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace api_steelco.Controllers
@@ -38,14 +37,29 @@ namespace api_steelco.Controllers
             }
         }
 
-        // POST api/<UtentiController>
         [HttpPost]
+        // POST api/<UtentiController>
         public IActionResult Post([FromBody] Utente utente)
         {
             try
             {
                 u.PostUtente(utente);
-                return Ok();
+            }
+            catch (Exception e)
+            {
+                return Conflict(e.Message);
+                throw;
+            }
+            return Ok();
+        }
+
+        [HttpPost("[action]")]
+
+        public IActionResult PostAdmin([FromBody] Admin admin)
+        {
+            try
+            {
+                 return Ok(u.AdminLogin(admin.username, admin.password));
             }
             catch (Exception e)
             {

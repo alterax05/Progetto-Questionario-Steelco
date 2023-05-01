@@ -1,12 +1,5 @@
-﻿using MySql.Data.MySqlClient;
-using Newtonsoft.Json;
-using System.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml.Linq;
-using Dapper;
-using MySql.Data;
-using System.Collections.Immutable;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Dapper;
+using MySql.Data.MySqlClient;
 
 namespace api_steelco
 {
@@ -32,7 +25,7 @@ namespace api_steelco
         /// </summary>
         /// <param name="risposta_utente"></param>
         /// <returns>True se l'utente è passato, altrimenti false</returns>
-        public bool VerificaRisposte(RisposteUtente risposta_utente)
+        public async Task<bool> VerificaRisposteAsync(RisposteUtente risposta_utente)
         {
             using var con = new MySqlConnection(_stringa_con);
             string codice_fiscale = risposta_utente.codice_fiscale;
@@ -41,14 +34,14 @@ namespace api_steelco
             foreach (var item in risposta_utente.lista)
             {
                 int id_domanda = item.id_domanda;
-                int id_risposta_corretta = con.QueryFirstOrDefault<int>("SELECT id_risposta_corretta FROM risposte WHERE id_domanda=@id_domanda", new { id_domanda });
                 bool risposta = item.risposta;
+                int id_risposta_corretta = await con.QueryFirstOrDefaultAsync<int>("SELECT id_risposta_corretta FROM risposte WHERE id_domanda=@id_domanda", new { id_domanda });
                 con.Execute("INSERT INTO storico (risposta, id_domanda, id_risposta_corretta, codice_fiscale) VALUES (@risposta, @id_domanda, @id_risposta_corretta, @codice_fiscale)", new { risposta, id_domanda, id_risposta_corretta, codice_fiscale });
             }
 
             //Prendo la matrice di risposte
-            int max_domande = con.QueryFirstOrDefault<int>("SELECT max_domande FROM settings");
-            List<Confronto> confronti = con.Query<Confronto>("SELECT storico.risposta,  risposte.corretta FROM storico INNER JOIN risposte ON storico.id_risposta_corretta = risposte.id_risposta_corretta AND storico.codice_fiscale = @codice_fiscale ORDER BY storico.id_risposta_data DESC LIMIT @max_domande;", new { codice_fiscale, max_domande }).Cast<Confronto>().ToList();
+            int max_domande = await con.QueryFirstOrDefaultAsync<int>("SELECT max_domande FROM settings");
+            List<Confronto> confronti = (await con.QueryAsync<Confronto>("SELECT storico.risposta,  risposte.corretta FROM storico INNER JOIN risposte ON storico.id_risposta_corretta = risposte.id_risposta_corretta AND storico.codice_fiscale = @codice_fiscale ORDER BY storico.id_risposta_data DESC LIMIT @max_domande;", new { codice_fiscale, max_domande })).Cast<Confronto>().ToList();
 
             //Confronto
             int punteggio = max_domande;
@@ -59,9 +52,15 @@ namespace api_steelco
                     punteggio--;
                 }
             }
-            con.Execute("INSERT INTO punteggio (utente, punteggio, q_domande) VALUES (@codice_fiscale, @punteggio, @max_domande);", new { codice_fiscale, punteggio, max_domande });
+            await con.ExecuteAsync("INSERT INTO punteggio (utente, punteggio, q_domande) VALUES (@codice_fiscale, @punteggio, @max_domande);", new { codice_fiscale, punteggio, max_domande });
 
-            return punteggio > (max_domande - 1);
+            return punteggio >= (max_domande - 1);
+        }
+
+        public async Task<int> GetMaxDomande()
+        {
+            using var con = new MySqlConnection(_stringa_con);
+            return await con.QueryFirstOrDefaultAsync<int>("SELECT max_domande FROM settings");
         }
     }
 }

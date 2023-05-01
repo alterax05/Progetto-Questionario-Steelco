@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using api_steelco;
-using Microsoft.AspNetCore.Authorization;
-using System.Runtime.CompilerServices;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace api_steelco.Controllers
@@ -76,7 +73,7 @@ namespace api_steelco.Controllers
         {
             try
             {
-                return Ok("{Righe_affette: " + d.DeleteDomanda(id) + "}");  
+                return Ok("{Righe_affette: " + d.DeleteDomanda(id) + "}");
             }
             catch (Exception e)
             {
