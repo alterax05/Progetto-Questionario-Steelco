@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Dapper;
-using MySql.Data;
+﻿using Dapper;
 using MySql.Data.MySqlClient;
 
 namespace api_steelco

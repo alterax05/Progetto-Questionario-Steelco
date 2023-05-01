@@ -1,9 +1,4 @@
-﻿
-using Org.BouncyCastle.Asn1;
-using System.Reflection.Metadata;
-using System.Security.Policy;
-
-namespace api_steelco
+﻿namespace api_steelco
 {
     public class Domanda
     {
@@ -30,6 +25,11 @@ namespace api_steelco
     {
         public int id_domanda { get; set; }
         public bool risposta { get; set; }
+    }
+    public class Admin
+    {
+        public string username { get; set; }
+        public string password { get; set; }
     }
     public class RisposteUtente
     {

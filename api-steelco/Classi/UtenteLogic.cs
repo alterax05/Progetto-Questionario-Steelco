@@ -1,10 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using Dapper;
 using MySql.Data.MySqlClient;
-using MySql.Data;
-using Dapper;
-using System.Text;
 using System.Security.Cryptography;
+using System.Text;
 
 
 namespace api_steelco
@@ -35,7 +32,7 @@ namespace api_steelco
         {
             using var con = new MySqlConnection(_stringa_con);
             string codice_fiscale = id;
-            Utente? utente = con.QueryFirstOrDefault<Utente>("SELECT codice_fiscale, nome, cognome FROM utenti WHERE codice_fiscale=@codice_fiscale", new {codice_fiscale});
+            Utente? utente = con.QueryFirstOrDefault<Utente>("SELECT codice_fiscale, nome, cognome FROM utenti WHERE codice_fiscale=@codice_fiscale", new { codice_fiscale });
             return utente;
         }
         /// <summary>
@@ -47,8 +44,13 @@ namespace api_steelco
         {
             using var con = new MySqlConnection(_stringa_con);
             utente.password = ComputeSha256Hash(utente.password);
-            con.Execute("INSERT INTO utenti (codice_fiscale, nome, cognome) VALUES (@codice_fiscale, @nome, @cognome)", utente);
+            con.Execute("INSERT INTO utenti (codice_fiscale, nome, cognome, password) VALUES (@codice_fiscale, @nome, @cognome, @password)", utente);
         }
+        /// <summary>
+        /// Calcola l'hash della password
+        /// </summary>
+        /// <param name="rawData">Stringa da eseguire l'hash</param>
+        /// <returns></returns>
         private string ComputeSha256Hash(string rawData)
         {
             using SHA256 sha256 = SHA256.Create();
@@ -60,6 +62,14 @@ namespace api_steelco
             }
             return builder.ToString();
         }
+        public bool AdminLogin(string username, string password)
+        {
+            using var con = new MySqlConnection(_stringa_con);
+            password = ComputeSha256Hash(password); 
+            var password_db = con.QueryFirstOrDefault<string>("SELECT value FROM settings WHERE value=@password", new { password });
+            var username_db = con.QueryFirstOrDefault<string>("SELECT value FROM settings WHERE value=@username", new { username });
+            return username == username_db && password == password_db;
+        }
         /// <summary>
         /// Elimina un utente dato il suo ID
         /// </summary>
@@ -69,7 +79,7 @@ namespace api_steelco
         {
             string codice_fiscale = id;
             using var con = new MySqlConnection(_stringa_con);
-            con.Execute("DELETE FROM utenti WHERE codice_fiscale=@codice_fiscale", new {codice_fiscale});
+            con.Execute("DELETE FROM utenti WHERE codice_fiscale=@codice_fiscale", new { codice_fiscale });
         }
     }
 }

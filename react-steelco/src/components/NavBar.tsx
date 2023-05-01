@@ -32,7 +32,7 @@ const NavBar: React.FC<NavBarProps> = ({nomi_italiano, nomi_inglese, links, isIt
                     <div className="collapse navbar-collapse" id="navcol-3">
                         <ul className="navbar-nav mx-auto">
                             {nomi.map((item, index) => (
-                                <Link testo={item} link={links[index]}/>
+                                <Link testo={item} link={links[index]} id={index.toString()}/>
                             ))}
                         </ul>
                         {
