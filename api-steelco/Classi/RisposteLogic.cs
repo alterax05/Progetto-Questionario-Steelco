@@ -60,7 +60,7 @@ namespace api_steelco
         public async Task<int> GetMaxDomande()
         {
             using var con = new MySqlConnection(_stringa_con);
-            return await con.QueryFirstOrDefaultAsync<int>("SELECT max_domande FROM settings");
+            return await con.QueryFirstOrDefaultAsync<int>("SELECT value FROM settings WHERE setting=max_domande");
         }
     }
 }

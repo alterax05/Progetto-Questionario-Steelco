@@ -16,7 +16,7 @@ const LoginAdmin: React.FC<{url: string}> = ({url}) => {
             userName: userName,
             password: password
         };
-        axios.post(url, dati, POST_headers)
+        axios.post(url + "api/Utenti/PostAdmin", dati, POST_headers)
             .then(r => {
                 setResponse(r.data);
             })

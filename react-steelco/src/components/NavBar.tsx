@@ -7,11 +7,10 @@ interface NavBarProps {
     nomi_inglese: string[];
     links: string[];
     isItalian: boolean;
-    testo_bottoni: string[];
-    links_bottoni: Function[] | string[];
+    setIsItalian?: (isItalian: boolean) => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({nomi_italiano, nomi_inglese, links, isItalian, testo_bottoni, links_bottoni}) => {
+const NavBar: React.FC<NavBarProps> = ({nomi_italiano, nomi_inglese, links, isItalian, setIsItalian}) => {
     //Navigazione in italiano o inglese
     const navigazione_inglese: string = "Toggle navigation"
     const navigazione_italiano: string = "Attiva/Disattiva navigazione"
@@ -36,9 +35,19 @@ const NavBar: React.FC<NavBarProps> = ({nomi_italiano, nomi_inglese, links, isIt
                             ))}
                         </ul>
                         {
-                            testo_bottoni.map((item, index) => (
-                                <button className="btn btn-primary" type="button" style={{marginRight: '10px'}}>{item}</button>
-                            ))
+                            setIsItalian !== undefined ? <>
+                                    <button className="btn btn-primary" type="button" style={{marginRight: '10px'}}
+                                            onClick={() => {
+                                                setIsItalian(true)
+                                            }}>Italiano
+                                    </button>
+                                    <button className="btn btn-primary" type="button" style={{marginRight: '10px'}}
+                                            onClick={() => {
+                                                setIsItalian(false)
+                                            }}>English
+                                    </button>
+                                </>
+                                : <></>
                         }
                     </div>
                 </div>

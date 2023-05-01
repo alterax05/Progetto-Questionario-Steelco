@@ -2,10 +2,15 @@ import React from 'react';
 import {useState} from 'react';
 import axios from "axios";
 
-const Login: React.FC<{url: string}> = ({url}) => {
+interface LoginInizialeProps {
+    setCodiceFiscale: (codice_fiscale: string) => void;
+    codiceFiscale: string;
+    url: string;
+    isItalian: boolean;
+}
+const Login: React.FC<LoginInizialeProps> = ({setCodiceFiscale,url, codiceFiscale, isItalian}) => {
     const [password, setPassword] = useState('');
     const [nome, setNome] = useState('');
-    const [codiceFiscale, setCodiceFiscale] = useState('');
     const [cognome, setCognome] = useState('');
     const [response, setResponse] = useState(null);
 
@@ -20,7 +25,7 @@ const Login: React.FC<{url: string}> = ({url}) => {
             cognome: cognome,
             password: password
         };
-        axios.post(url, dati, POST_headers)
+        axios.post(url + "api/Utenti", dati, POST_headers)
             .then(r => {
                 setResponse(r.data);
             })
@@ -35,7 +40,7 @@ const Login: React.FC<{url: string}> = ({url}) => {
                     <div className="container">
                         <div className="row mb-5">
                             <div className="col-md-8 col-xl-6 text-center mx-auto"><h2>Sign in</h2>
-                                <p>Inserire nome e cognome</p>
+                                <p>{isItalian?"Inserire nome, cognome, password e codice fiscale":"Insert name, surname, password and fiscal code"}</p>
                             </div>
                         </div>
                         <div className="row d-flex justify-content-center">
@@ -52,15 +57,16 @@ const Login: React.FC<{url: string}> = ({url}) => {
                                         <form className="text-center" method="post" onSubmit={handleSubmit}>
                                             <div className="mb-3">
                                                 <div className="mb-3">
-                                                    <input className="form-control" type="text" name="nome" placeholder="Nome" value={nome} onChange={event=>setNome(event.target.value)} required={true}/>
+                                                    <input className="form-control" type="text" name="nome" placeholder={isItalian?"Nome":"Name"} value={nome} onChange={event=>setNome(event.target.value)} required={true}/>
                                                 </div>
-                                                <div className="mb-3"><input className="form-control" type="text" name="cognome" placeholder="Cognome" value={cognome} onChange={event=>setCognome(event.target.value)} required={true}/>
+                                                <div className="mb-3"><
+                                                    input className="form-control" type="text" name="cognome" placeholder={isItalian?"Cognome":"Surname"} value={cognome} onChange={event=>setCognome(event.target.value)} required={true}/>
                                                 </div>
                                             </div>
                                             <div className="mb-3">
-                                                <input className="form-control" type="text" name="id" placeholder="Codice Fiscale" value={codiceFiscale} onChange={(event) => setCodiceFiscale(event.target.value)} required={true}/>
+                                                <input className="form-control" type="text" name="id" placeholder={isItalian?"Codice Fiscale":"Fiscal Code"} value={codiceFiscale} onChange={(event) => setCodiceFiscale(event.target.value)} required={true}/>
                                             </div>
-                                            <input className="form-control" type="password" name="password" placeholder="Password" value={password} onChange={(event) => setPassword(event.target.value)} required={true}/>
+                                                <input className="form-control" type="password" name="password" placeholder="Password" value={password} onChange={(event) => setPassword(event.target.value)} required={true}/>
                                             <div className="mb-3"></div>
                                             <button className="btn btn-primary d-block w-100" type="submit">Login</button>
                                         </form>
