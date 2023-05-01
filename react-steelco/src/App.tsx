@@ -1,14 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import './App.css';
 import Video from './components/YoutubeVideoEncoder';
 import NavBar from "./components/NavBar";
 import Pass from "./components/Pass";
 import Domande from "./components/Domande";
 import Login from "./components/Login";
 import LoginAdmin from "./components/LoginAdmin";
-import DomandeAdmin from "./components/DomandeAdmin";
+import UserAdmin from "./components/UserAdmin";
+import DomandeAdminLista from "./components/DomandeAdminLista";
+import DomandeAdminAdd from "./components/DomandeAdminAdd";
 
 function App() {
   const nomi_italiano: string[] = ["Home", "Chi siamo", "Prodotti", "Servizi", "News", "Contatti"];
@@ -22,9 +22,11 @@ function App() {
         <Login url={"https://localhost:7018/api/Utenti"}/>
         <LoginAdmin url={"https://localhost:7018/api/Utenti/PostAdmin"}/>
         <Video/>
-        <Pass pass={false} isItalian={isItalian}/>
+        <Pass pass={true} isItalian={isItalian}/>
         <Domande url={"https://localhost:7018/"} isItalian={isItalian} codice_fiscale={"1234567890123456"}/>
-        <DomandeAdmin url={"https://localhost:7018/"}/>
+        <DomandeAdminAdd url={"https://localhost:7018/"}/>
+        <DomandeAdminLista url={"https://localhost:7018/"}/>
+        <UserAdmin url={"https://localhost:7018/"}/>
     </>
   );
 }

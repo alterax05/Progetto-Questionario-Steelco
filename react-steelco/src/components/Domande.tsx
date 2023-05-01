@@ -1,7 +1,7 @@
 import React, {useState, useEffect, FC} from "react";
 import axios from "axios";
 
-export interface Domanda {
+export interface Domanda{
     id_domanda: number;
     testo_italiano: string;
     testo_inglese: string;

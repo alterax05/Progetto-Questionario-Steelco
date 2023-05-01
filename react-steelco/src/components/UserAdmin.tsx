@@ -1,5 +1,4 @@
-import React, {useEffect} from 'react';
-import {useState, FC} from 'react';
+import React, {useEffect, useState, FC} from 'react';
 import axios from "axios";
 
 interface User {
@@ -8,7 +7,7 @@ interface User {
     codice_fiscale: string;
 }
 
-const DomandeAdmin: FC<{ url: string }> = ({url}) => {
+const UserAdmin: FC<{ url: string }> = ({url}) => {
     const [ids, setIds] = useState<string[]>([]);
     const [user, setUser] = useState<User[]>([]);
 
@@ -28,6 +27,7 @@ const DomandeAdmin: FC<{ url: string }> = ({url}) => {
                 alert("Errore");
             }
         }
+        setIds([]);
     }
 
     //Scarica gli utenti dal server
@@ -91,4 +91,4 @@ const DomandeAdmin: FC<{ url: string }> = ({url}) => {
         </>
     );
 }
-export default DomandeAdmin;
+export default UserAdmin;
