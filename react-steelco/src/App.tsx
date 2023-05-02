@@ -1,32 +1,32 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import Video from './components/YoutubeVideoEncoder';
-import NavBar from "./components/NavBar";
+import LoginIniziale from "./pages/LoginIniziale";
+import LoginAdmin from "./pages/LoginAdmin";
+import Video from "./pages/Video";
+import Domande from "./pages/Domande";
 import Pass from "./components/Pass";
-import Domande from "./components/Domande";
-import Login from "./components/Login";
-import LoginAdmin from "./components/LoginAdmin";
-import UserAdmin from "./components/UserAdmin";
-import DomandeAdminLista from "./components/DomandeAdminLista";
-import DomandeAdminAdd from "./components/DomandeAdminAdd";
+import DomandeAdmin from "./pages/DomandeAdmin";
+import UtentiAdmin from "./pages/UtentiAdmin";
 
 function App() {
-  const nomi_italiano: string[] = ["Home", "Chi siamo", "Prodotti", "Servizi", "News", "Contatti"];
-  const nomi_inglese: string[] = ["Home", "About us", "Products", "Services", "News", "Contacts"];
-  const links: string[] = ["/", "/about-us", "/products", "/services", "/news", "/contacts"];
-  const isItalian: boolean = true;
+    const [isItalian, setIsItalian] = useState<boolean>(true);
+    const [codiceFiscale, setCodiceFisclale] = useState<string>("");
+    const [passato, setPassato] = useState<boolean>(false);
+    const url_api: string = "https://localhost:7018/";
 
   return (
     <>
-        <NavBar nomi_italiano={nomi_italiano} nomi_inglese={nomi_inglese} links={links} isItalian={isItalian} links_bottoni={links} testo_bottoni={["Ciao", "Giggio"]} />
-        <Login url={"https://localhost:7018/api/Utenti"}/>
-        <LoginAdmin url={"https://localhost:7018/api/Utenti/PostAdmin"}/>
-        <Video/>
-        <Pass pass={true} isItalian={isItalian}/>
-        <Domande url={"https://localhost:7018/"} isItalian={isItalian} codice_fiscale={"1234567890123456"}/>
-        <DomandeAdminAdd url={"https://localhost:7018/"}/>
-        <DomandeAdminLista url={"https://localhost:7018/"}/>
-        <UserAdmin url={"https://localhost:7018/"}/>
+        <Router>
+            <Routes>
+                <Route path="/" element={<LoginIniziale setCodiceFiscale={setCodiceFisclale} codiceFiscale={codiceFiscale} url={url_api} isItalian={isItalian} setIsItalian={setIsItalian}/>}/>
+                <Route path="/domande" element={<Domande isItalian={isItalian} url_api={url_api} codiceFiscale={codiceFiscale} passato={passato} setPassato={setPassato}/>}/>
+                <Route path="/login_admin" element={<LoginAdmin url={url_api}/>}/>
+                <Route path="/video" element={<Video isItalian={isItalian}/>}/>
+                <Route path="/result" element={<Pass pass={passato} isItalian={isItalian}/>}/>
+                <Route path={"/domande_admin"} element={<DomandeAdmin url={url_api}/>}/>
+                <Route path={"/utenti_admin"} element={<UtentiAdmin url={url_api}/>}/>
+            </Routes>
+        </Router>
     </>
   );
 }

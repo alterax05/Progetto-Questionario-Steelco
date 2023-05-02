@@ -5,6 +5,7 @@ interface User {
     nome: string;
     cognome: string;
     codice_fiscale: string;
+    punteggio?: number;
 }
 
 const UserAdmin: FC<{ url: string }> = ({url}) => {
@@ -19,9 +20,9 @@ const UserAdmin: FC<{ url: string }> = ({url}) => {
             return;
         }
 
-        const POST_headers = {headers: {'Content-Type': 'application/json'}};
+        const DELETE_headers = {headers: {'accept': '*/*'}};
         for (let id of ids) {
-            const response = await axios.delete(url + "api/Utenti/" + id, POST_headers);
+            const response = await axios.delete(url + "api/Utenti/" + encodeURIComponent(id), DELETE_headers);
             console.log(response.data);
             if (response.status !== 200) {
                 alert("Errore");
@@ -65,6 +66,7 @@ const UserAdmin: FC<{ url: string }> = ({url}) => {
                             <th>Nome</th>
                             <th>Cognome</th>
                             <th>Codice Fiscale</th>
+                            <th>Punteggio</th>
                             <th>Seleziona</th>
                         </tr>
                         </thead>
@@ -75,6 +77,7 @@ const UserAdmin: FC<{ url: string }> = ({url}) => {
                                     <td>{item.nome}</td>
                                     <td>{item.cognome}</td>
                                     <td>{item.codice_fiscale}</td>
+                                    <td>{item.punteggio}</td>
                                     <td><input type="checkbox" id={item.codice_fiscale}
                                                onChange={event => handleSelect(event.target.id, event.target.checked)}/>
                                     </td>

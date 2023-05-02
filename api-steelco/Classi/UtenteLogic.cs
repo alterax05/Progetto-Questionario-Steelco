@@ -21,6 +21,11 @@ namespace api_steelco
         {
             using var con = new MySqlConnection(_stringa_con);
             List<Utente> utenti = con.Query<Utente>("SELECT codice_fiscale, nome, cognome FROM utenti", _stringa_con).ToList();
+            for (int i = 0; i < utenti.Count; i++)
+            {
+                int? punteggio = con.QueryFirstOrDefault<int?>("SELECT MAX(punteggio) FROM punteggio WHERE utente=@codice_fiscale", new { codice_fiscale = utenti[i].codice_fiscale });
+                utenti[i].punteggio = punteggio;
+            }
             return utenti;
         }
         /// <summary>
@@ -33,6 +38,10 @@ namespace api_steelco
             using var con = new MySqlConnection(_stringa_con);
             string codice_fiscale = id;
             Utente? utente = con.QueryFirstOrDefault<Utente>("SELECT codice_fiscale, nome, cognome FROM utenti WHERE codice_fiscale=@codice_fiscale", new { codice_fiscale });
+            if (utente != null)
+            {
+                utente.punteggio = con.QueryFirstOrDefault<int>("SELECT MAX(punteggio) FROM punteggio WHERE utente=@codice_fiscale", new { codice_fiscale = utente.codice_fiscale });
+            }
             return utente;
         }
         /// <summary>

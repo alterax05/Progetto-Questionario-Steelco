@@ -63,5 +63,6 @@
         public string nome { get; set; }
         public string cognome { get; set; }
         public string password { get; set; }
+        public int? punteggio { get; set; }
     }
 }

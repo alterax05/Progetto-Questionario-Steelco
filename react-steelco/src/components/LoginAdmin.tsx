@@ -1,12 +1,14 @@
 import React from 'react';
 import {useState} from 'react';
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const LoginAdmin: React.FC<{url: string}> = ({url}) => {
     const [password, setPassword] = useState('');
     const [userName, setUserName] = useState('');
     const [response, setResponse] = useState(null);
 
+    const navigate = useNavigate();
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         //Impostiamo gli headers
@@ -16,7 +18,7 @@ const LoginAdmin: React.FC<{url: string}> = ({url}) => {
             userName: userName,
             password: password
         };
-        axios.post(url, dati, POST_headers)
+        axios.post(url + "api/Utenti/PostAdmin", dati, POST_headers)
             .then(r => {
                 setResponse(r.data);
             })
@@ -53,7 +55,7 @@ const LoginAdmin: React.FC<{url: string}> = ({url}) => {
                                             </div>
                                             <input className="form-control" type="password" name="password" placeholder="Password" value={password} onChange={(event) => setPassword(event.target.value)} required={true}/>
                                             <div className="mb-3"></div>
-                                            <button className="btn btn-primary d-block w-100" type="submit">Login</button>
+                                            <button className="btn btn-primary d-block w-100" type="submit" onClick={()=>{navigate("/domande_admin")}}>Login</button>
                                         </form>
                                     </div>
                                 </div>

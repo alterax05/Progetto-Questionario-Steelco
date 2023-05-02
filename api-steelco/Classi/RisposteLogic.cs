@@ -40,7 +40,7 @@ namespace api_steelco
             }
 
             //Prendo la matrice di risposte
-            int max_domande = await con.QueryFirstOrDefaultAsync<int>("SELECT max_domande FROM settings");
+            int max_domande = await con.QueryFirstOrDefaultAsync<int>("SELECT value FROM settings WHERE setting=@max_domande", new { max_domande = "max_domande" });
             List<Confronto> confronti = (await con.QueryAsync<Confronto>("SELECT storico.risposta,  risposte.corretta FROM storico INNER JOIN risposte ON storico.id_risposta_corretta = risposte.id_risposta_corretta AND storico.codice_fiscale = @codice_fiscale ORDER BY storico.id_risposta_data DESC LIMIT @max_domande;", new { codice_fiscale, max_domande })).Cast<Confronto>().ToList();
 
             //Confronto
@@ -60,7 +60,7 @@ namespace api_steelco
         public async Task<int> GetMaxDomande()
         {
             using var con = new MySqlConnection(_stringa_con);
-            return await con.QueryFirstOrDefaultAsync<int>("SELECT max_domande FROM settings");
+            return await con.QueryFirstOrDefaultAsync<int>("SELECT value FROM settings WHERE setting=@max_domande", new {max_domande="max_domande"});
         }
     }
 }
