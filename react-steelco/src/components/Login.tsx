@@ -72,6 +72,14 @@ const Login: React.FC<LoginInizialeProps> = ({setCodiceFiscale, url, codiceFisca
                                                 <input className="form-control" type="text" name="id" placeholder={isItalian?"Codice Fiscale":"Fiscal Code"} value={codiceFiscale} onChange={(event) => setCodiceFiscale(event.target.value)} required={true}/>
                                             </div>
                                                 <input className="form-control" type="password" name="password" placeholder="Password" value={password} onChange={(event) => setPassword(event.target.value)} required={true}/>
+                                            <div className="form-check text-center d-lg-flex justify-content-lg-center"
+                                                 style={{marginBottom: "10px", marginRight: 0}}>
+                                                <input id="formCheck-1"
+                                                       className="form-check-input"
+                                                       type="checkbox"
+                                                       required={true}/>
+                                                <a href={"https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"}><label className="form-check-label" htmlFor="formCheck-1" style={{marginLeft: "10px"}}>Leggi NDA</label></a>
+                                            </div>
                                             <div className="mb-3">
                                             </div>
                                             <button className="btn btn-primary d-block w-100" type="submit">Login</button>

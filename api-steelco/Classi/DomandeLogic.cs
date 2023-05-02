@@ -38,7 +38,7 @@ namespace api_steelco
         public int PostDomanda(NuovaDomanda domanda)
         {
             using var con = new MySqlConnection(_stringa_con);
-            string sql = @"INSERT INTO domande (testo_italiano, testo_inglese) VALUES (@testo_italiano, @testo_inglese); INSERT INTO risposte (id_domanda, risposta) VALUES (LAST_INSERT_ID(), @risposta);";
+            string sql = @"INSERT INTO domande (testo_italiano, testo_inglese) VALUES (@testo_italiano, @testo_inglese); INSERT INTO risposte (id_domanda, corretta) VALUES (LAST_INSERT_ID(), @corretta);";
             return con.Execute(sql, domanda);
         }
         /// <summary>
