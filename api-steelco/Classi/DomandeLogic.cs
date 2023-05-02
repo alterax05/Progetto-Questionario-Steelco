@@ -60,8 +60,8 @@ namespace api_steelco
         {
             int righe_affette = 0;
             using var con = new MySqlConnection(_stringa_con);
-            righe_affette += con.Execute("DELETE FROM risposte WHERE id_domanda = @id_domanda", new { id_domanda });
             righe_affette += con.Execute("DELETE FROM storico WHERE id_domanda = @id_domanda", new { id_domanda });
+            righe_affette += con.Execute("DELETE FROM risposte WHERE id_domanda = @id_domanda", new { id_domanda });
             righe_affette += con.Execute("DELETE FROM domande WHERE id_domanda = @id_domanda", new { id_domanda });
             return righe_affette;
         }

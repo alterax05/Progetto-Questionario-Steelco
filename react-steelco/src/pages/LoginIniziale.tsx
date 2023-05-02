@@ -1,4 +1,4 @@
-import React, {useState, FC} from 'react';
+import {FC} from 'react';
 import Login from "../components/Login";
 import NavBar from "../components/NavBar";
 
@@ -10,13 +10,12 @@ interface LoginInizialeProps {
     setIsItalian: (isItalian: boolean) => void;
 }
 
-const LoginIniziale:FC<LoginInizialeProps> = ({setCodiceFiscale, url, codiceFiscale,isItalian,setIsItalian}) => {
-
+const LoginAdmin:FC<LoginInizialeProps> = ({setCodiceFiscale, url, codiceFiscale,isItalian,setIsItalian}) => {
     return(
         <>
-            <NavBar nomi_italiano={[]} nomi_inglese={[]} links={[]} isItalian={isItalian} setIsItalian={setIsItalian}/>
+            <NavBar nomi_italiano={["Login","Admin"]} nomi_inglese={["Login","Admin"]} links={["/", "/login_admin"]} isItalian={isItalian} setIsItalian={setIsItalian}/>
             <Login url={url} setCodiceFiscale={setCodiceFiscale} codiceFiscale={codiceFiscale} isItalian={isItalian} />
         </>
     )
 }
-export default LoginIniziale;
+export default LoginAdmin;

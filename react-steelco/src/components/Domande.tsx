@@ -1,4 +1,6 @@
 import React, {useState, useEffect, FC} from "react";
+import {useNavigate} from "react-router-dom";
+
 import axios from "axios";
 
 export interface Domanda{
@@ -17,10 +19,18 @@ interface Risposte {
     lista: Risposta[];
 }
 
-const Domande: FC<{ isItalian: boolean, url: string, codice_fiscale: string }> = ({isItalian, url, codice_fiscale}) => {
-    const [risposte, setRisposte] = useState<Risposte>({codice_fiscale: codice_fiscale, lista: []});
+interface DomandeProps {
+    isItalian: boolean;
+    url: string;
+    codiceFiscale: string;
+    passato: boolean;
+    setPassato: (passato:boolean)=>void;
+}
+
+const Domande: FC<DomandeProps> = ({isItalian, url, codiceFiscale, passato,setPassato}) => {
+    const [risposte, setRisposte] = useState<Risposte>({codice_fiscale: codiceFiscale, lista: []});
     const [domande, setDomande] = useState<Domanda[]>([]);
-    const [response, setResponse] = useState(null);
+    const navigate = useNavigate();
 
     //Controlla che tutti i campi siano stati riempiti
     const validateForm = () => {
@@ -41,15 +51,24 @@ const Domande: FC<{ isItalian: boolean, url: string, codice_fiscale: string }> =
         const POST_headers = {headers: {'Content-Type': 'application/json'}};
         //Impostiamo il tipo di dato che vogliamo inviare
 
-        console.log(risposte)
+        console.log(JSON.stringify(risposte));
         try {
             const response = await axios.post(url + "api/Risposte", risposte, POST_headers)
-            setResponse(response.data);
+                if (response.data === true)
+                {
+                    setPassato(true);
+                }
+                else
+                {
+                    setPassato(false);
+                }
         }
         catch (error: any) {
-            setResponse(error);
+            console.log(error);
+            alert("Errore, riprovare");
+            return;
         }
-        console.log(response)
+        navigate("/result");
     }
 
     //Gestisce il cambiamento di una risposta
@@ -66,7 +85,7 @@ const Domande: FC<{ isItalian: boolean, url: string, codice_fiscale: string }> =
         if (!trovato) {
             risposte_temp.push(risposta);
         }
-        setRisposte({codice_fiscale: codice_fiscale, lista: risposte_temp});
+        setRisposte({codice_fiscale: codiceFiscale, lista: risposte_temp});
         console.log(risposte)
     }
 
@@ -75,7 +94,7 @@ const Domande: FC<{ isItalian: boolean, url: string, codice_fiscale: string }> =
         fetch(url + "api/Domande")
             .then(response => response.json())
             .then(data => setDomande(data));
-    });
+    }   );
 
     return (<>
             <form style={{margin: "30px"}} method="post" onSubmit={handleSubmit}>
@@ -108,7 +127,7 @@ const Domande: FC<{ isItalian: boolean, url: string, codice_fiscale: string }> =
                     </table>
                 </div>
                 <div className={"d-flex justify-content-center"}>
-                <button className="btn btn-primary d-block w-25" type="submit">Invia risposte</button>
+                        {<button className="btn btn-primary d-block w-25" type="submit">Invia risposte</button>}
                 </div>
             </form>
         </>

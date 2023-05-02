@@ -1,6 +1,7 @@
 import React from 'react';
 import pass_image from '../assets/result-pass-icon.svg';
 import fail_image from '../assets/result-fail-icon.svg';
+import {Link} from "react-router-dom";
 
 interface ResultProps {
     pass: boolean;
@@ -49,10 +50,9 @@ const Result:React.FC<ResultProps> = ({pass,isItalian}) => {
                         <p className="fw-bold text-primary mb-2">
                             {titolo}
                         </p>
-                        <img src={pass ? pass_image : fail_image} alt={testo} width={"76px"}/>
-                            <img/>
+                        <img src={pass ? pass_image : fail_image} width={"76px"} alt={testo}/><img/>
                         <h1 className="fw-bold mb-4">{testo}</h1>
-                        {pass ? <></>:<button className="btn btn-primary fs-5 me-2 py-2 px-4" type="button">{bottone}</button>}
+                        {pass ? <></>:<Link to={"/domande"}><button className="btn btn-primary fs-5 me-2 py-2 px-4" type="button">{bottone}</button></Link>}
                     </div>
                 </div>
             </section>

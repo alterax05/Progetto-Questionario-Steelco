@@ -1,13 +1,15 @@
 import React, {useState, FC} from "react";
 import axios from "axios";
 
+interface Domanda {
+    testo_italiano: string,
+    testo_inglese: string,
+    corretta: boolean
+}
+
 const DomandeAdminAdd: FC<{ url: string }> = ({url}) => {
 
-    const [domanda, setDomanda] = useState<{
-        testo_italiano: string,
-        testo_inglese: string,
-        corretta: boolean
-    }>({testo_italiano: "", testo_inglese: "", corretta: true});
+    const [domanda, setDomanda] = useState<Domanda>({testo_italiano: "", testo_inglese: "", corretta: true});
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -40,22 +42,27 @@ const DomandeAdminAdd: FC<{ url: string }> = ({url}) => {
                         className="form-control d-inline-flex" type="text"
                         style={{marginBottom: "10px", marginRight: "0", marginLeft: "0"}} placeholder="Testo Italiano"
                         onChange={event => () => {
-                            let domanda_temp = domanda;
-                            domanda_temp.testo_italiano = event.target.value;
-                            setDomanda(domanda_temp);
-                        }}
-                    />
+                            console.log(domanda);
+                            setDomanda({
+                                testo_italiano: event.target.value,
+                                testo_inglese: domanda.testo_inglese,
+                                corretta: domanda.corretta
+                            })
+                        }}/>
+
                     <input
                         className="form-control d-inline-flex" type="text"
                         required={true}
                         style={{marginBottom: "10px", marginRight: "0", marginLeft: "0"}}
                         placeholder="Testo Inglese"
                         onChange={event => () => {
-                            let domanda_temp = domanda;
-                            domanda_temp.testo_inglese = event.target.value;
-                            setDomanda(domanda_temp);
-                        }}
-                    />
+                            console.log(domanda);
+                            setDomanda({
+                                testo_italiano: domanda.testo_italiano,
+                                testo_inglese: event.target.value,
+                                corretta: domanda.corretta
+                            })
+                        }}/>
                     <div className="form-check text-center d-lg-flex justify-content-lg-center"
                          style={{marginBottom: "10px", marginRight: 0}}>
                         <input id="formCheck-1"
@@ -63,12 +70,16 @@ const DomandeAdminAdd: FC<{ url: string }> = ({url}) => {
                                type="checkbox"
                                required={true}
                                onChange={event => () => {
-                                let domanda_temp = domanda;
-                                domanda_temp.corretta = event.target.checked;
-                                setDomanda(domanda_temp);
-                        }}/>
+                                   console.log(domanda);
+                                   setDomanda({
+                                       testo_italiano: domanda.testo_italiano,
+                                       testo_inglese: domanda.testo_inglese,
+                                       corretta: event.target.checked
+                                   })
+                               }}/>
                         <label
-                            className="form-check-label" htmlFor="formCheck-1" style={{marginLeft: "10px"}}>Seleziona per
+                            className="form-check-label" htmlFor="formCheck-1" style={{marginLeft: "10px"}}>Seleziona
+                            per
                             risposta vera</label>
                     </div>
                     <button className="btn btn-primary" type={"submit"}>Aggiungi</button>

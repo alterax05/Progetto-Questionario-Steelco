@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "./NavBarLinks";
 import image from "../assets/steelco-logo.jpg";
+import {useNavigate} from "react-router-dom";
 
 interface NavBarProps {
     nomi_italiano: string[];
@@ -10,7 +11,13 @@ interface NavBarProps {
     setIsItalian?: (isItalian: boolean) => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({nomi_italiano, nomi_inglese, links, isItalian, setIsItalian}) => {
+const NavBar: React.FC<NavBarProps> = ({
+                                           nomi_italiano,
+                                           nomi_inglese,
+                                           links,
+                                           isItalian,
+                                           setIsItalian,
+                                       }) => {
     //Navigazione in italiano o inglese
     const navigazione_inglese: string = "Toggle navigation"
     const navigazione_italiano: string = "Attiva/Disattiva navigazione"

@@ -1,6 +1,7 @@
 import React from 'react';
 import {useState} from 'react';
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 interface LoginInizialeProps {
     setCodiceFiscale: (codice_fiscale: string) => void;
@@ -8,11 +9,13 @@ interface LoginInizialeProps {
     url: string;
     isItalian: boolean;
 }
-const Login: React.FC<LoginInizialeProps> = ({setCodiceFiscale,url, codiceFiscale, isItalian}) => {
+const Login: React.FC<LoginInizialeProps> = ({setCodiceFiscale, url, codiceFiscale, isItalian}) => {
     const [password, setPassword] = useState('');
     const [nome, setNome] = useState('');
     const [cognome, setCognome] = useState('');
-    const [response, setResponse] = useState(null);
+    const [response, setResponse] = useState();
+    const navigate = useNavigate();
+
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -27,12 +30,14 @@ const Login: React.FC<LoginInizialeProps> = ({setCodiceFiscale,url, codiceFiscal
         };
         axios.post(url + "api/Utenti", dati, POST_headers)
             .then(r => {
-                setResponse(r.data);
             })
             .catch(e => {
                 setResponse(e);
+                console.log(response);
+                return;
             });
-        console.log(response);
+        console.log(codiceFiscale)
+        navigate("/video");
     }
         return (
             <>
@@ -67,7 +72,8 @@ const Login: React.FC<LoginInizialeProps> = ({setCodiceFiscale,url, codiceFiscal
                                                 <input className="form-control" type="text" name="id" placeholder={isItalian?"Codice Fiscale":"Fiscal Code"} value={codiceFiscale} onChange={(event) => setCodiceFiscale(event.target.value)} required={true}/>
                                             </div>
                                                 <input className="form-control" type="password" name="password" placeholder="Password" value={password} onChange={(event) => setPassword(event.target.value)} required={true}/>
-                                            <div className="mb-3"></div>
+                                            <div className="mb-3">
+                                            </div>
                                             <button className="btn btn-primary d-block w-100" type="submit">Login</button>
                                         </form>
                                     </div>
