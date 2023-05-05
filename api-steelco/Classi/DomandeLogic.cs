@@ -18,7 +18,7 @@ namespace api_steelco
         public List<Domanda> GetDomande()
         {
             using var con = new MySqlConnection(_stringa_con);
-            return con.Query<Domanda>("SELECT * FROM domande").ToList() ?? new List<Domanda>();
+            return con.Query<Domanda>("SELECT * FROM domande").ToList();
         }
         /// <summary>
         /// Ottieni una domanda in base al suo id

@@ -16,6 +16,7 @@ namespace api_steelco.Controllers
         }
 
         // GET: api/<UtentiController>
+        [ApiKeyAuthFilter]
         [HttpGet]
         public List<Utente> Get()
         {
@@ -23,6 +24,7 @@ namespace api_steelco.Controllers
         }
 
         // GET: api/<UtentiController>/5
+        [ApiKeyAuthFilter]
         [HttpGet("{id}")]
         public IActionResult Get(string id)
         {
@@ -37,6 +39,7 @@ namespace api_steelco.Controllers
             }
         }
 
+        [ApiKeyAuthFilter]
         [HttpPost]
         // POST api/<UtentiController>
         public IActionResult Post([FromBody] Utente utente)
@@ -54,7 +57,7 @@ namespace api_steelco.Controllers
         }
 
         [HttpPost("[action]")]
-
+        [ApiKeyAuthFilter]
         public IActionResult PostAdmin([FromBody] Admin admin)
         {
             try
@@ -70,6 +73,8 @@ namespace api_steelco.Controllers
 
         // DELETE api/<UtentiController>/5
         [HttpDelete("{id}")]
+        [ApiKeyAuthFilter]
+
         public IActionResult Delete(string id)
         {
             try
