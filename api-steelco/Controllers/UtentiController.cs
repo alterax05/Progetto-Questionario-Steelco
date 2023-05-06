@@ -54,7 +54,6 @@ namespace api_steelco.Controllers
         }
 
         [HttpPost("[action]")]
-
         public IActionResult PostAdmin([FromBody] Admin admin)
         {
             try

@@ -1,4 +1,7 @@
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.OpenApi.Models;
+
 namespace api_steelco
 {
     public class Program
@@ -11,7 +14,31 @@ namespace api_steelco
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(
+            c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+                // Add authentication information to Swagger
+                var scheme = new OpenApiSecurityScheme
+                {
+                    Name = "Authorization", 
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    In = ParameterLocation.Header,
+                    Description = "Basic Authentication header using the Bearer scheme."
+                };
+
+                var requirement = new OpenApiSecurityRequirement
+                {
+                    { scheme, new string[] { } }
+                };
+
+                c.AddSecurityDefinition("basic", scheme);
+                c.AddSecurityRequirement(requirement);
+            });
+            builder.Services.AddAuthentication("BasicAuthentication")
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
             var app = builder.Build();
 
@@ -19,7 +46,7 @@ namespace api_steelco
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c => { c.RoutePrefix = string.Empty;c.SwaggerEndpoint("/swagger/v1/swagger.json", "V1"); });
                 app.UseCors(x => x
                     .AllowAnyMethod()
                     .AllowAnyHeader()
@@ -31,6 +58,7 @@ namespace api_steelco
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.MapControllers();
 
