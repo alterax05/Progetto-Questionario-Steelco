@@ -26,6 +26,7 @@ const LoginAdmin: React.FC<{url: string}> = ({url}) => {
                 setResponse(e);
             });
         console.log(response);
+        navigate("/domande_admin")
     }
         return (
             <>
@@ -55,7 +56,7 @@ const LoginAdmin: React.FC<{url: string}> = ({url}) => {
                                             </div>
                                             <input className="form-control" type="password" name="password" placeholder="Password" value={password} onChange={(event) => setPassword(event.target.value)} required={true}/>
                                             <div className="mb-3"></div>
-                                            <button className="btn btn-primary d-block w-100" type="submit" onClick={()=>{navigate("/domande_admin")}}>Login</button>
+                                            <button className="btn btn-primary d-block w-100" type="submit">Login</button>
                                         </form>
                                     </div>
                                 </div>

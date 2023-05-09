@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 
 import axios from "axios";
 
-export interface Domanda{
+export interface Domanda {
     id_domanda: number;
     testo_italiano: string;
     testo_inglese: string;
@@ -23,14 +23,16 @@ interface DomandeProps {
     isItalian: boolean;
     url: string;
     codiceFiscale: string;
-    passato: boolean;
-    setPassato: (passato:boolean)=>void;
 }
 
-const Domande: FC<DomandeProps> = ({isItalian, url, codiceFiscale, passato,setPassato}) => {
+const Domande: FC<DomandeProps> = ({isItalian, url, codiceFiscale}) => {
+    const navigate = useNavigate();
     const [risposte, setRisposte] = useState<Risposte>({codice_fiscale: codiceFiscale, lista: []});
     const [domande, setDomande] = useState<Domanda[]>([]);
-    const navigate = useNavigate();
+
+    if (sessionStorage.getItem("risposte") !== null && risposte.lista.length === 0) {
+        setRisposte({codice_fiscale: codiceFiscale, lista: JSON.parse(sessionStorage.getItem("risposte") ?? '[]')});
+    }
 
     //Controlla che tutti i campi siano stati riempiti
     const validateForm = () => {
@@ -42,8 +44,7 @@ const Domande: FC<DomandeProps> = ({isItalian, url, codiceFiscale, passato,setPa
         //Preveniamo il comportamento di default del form
         event.preventDefault();
         //Controlliamo che tutti i campi siano stati riempiti
-        if (!validateForm())
-        {
+        if (!validateForm()) {
             alert("Rispondi a tutte le domande");
             return;
         }
@@ -54,16 +55,12 @@ const Domande: FC<DomandeProps> = ({isItalian, url, codiceFiscale, passato,setPa
         console.log(JSON.stringify(risposte));
         try {
             const response = await axios.post(url + "api/Risposte", risposte, POST_headers)
-                if (response.data === true)
-                {
-                    setPassato(true);
-                }
-                else
-                {
-                    setPassato(false);
-                }
-        }
-        catch (error: any) {
+            if (response.data === true) {
+                localStorage.setItem("passato", "true");
+            } else {
+                localStorage.setItem("passato", "false");
+            }
+        } catch (error: any) {
             console.log(error);
             alert("Errore, riprovare");
             return;
@@ -86,15 +83,17 @@ const Domande: FC<DomandeProps> = ({isItalian, url, codiceFiscale, passato,setPa
             risposte_temp.push(risposta);
         }
         setRisposte({codice_fiscale: codiceFiscale, lista: risposte_temp});
+        sessionStorage.setItem("risposte", JSON.stringify(risposte_temp));
         console.log(risposte)
     }
 
     //Scarica le domande dal server
     useEffect(() => {
-        fetch(url + "api/Domande")
-            .then(response => response.json())
-            .then(data => setDomande(data));
-    }   );
+            fetch(url + "api/Domande")
+                .then(response => response.json())
+                .then(data => setDomande(data));
+        }
+    );
 
     return (<>
             <form style={{margin: "30px"}} method="post" onSubmit={handleSubmit}>
@@ -102,9 +101,9 @@ const Domande: FC<DomandeProps> = ({isItalian, url, codiceFiscale, passato,setPa
                     <table className="table">
                         <thead>
                         <tr>
-                            <th>Domanda</th>
-                            <th>Vero</th>
-                            <th>Falso</th>
+                            <th>{isItalian? "Domanda":"Question"}</th>
+                            <th>{isItalian? "Vero": "True"}</th>
+                            <th>{isItalian? "Falso": "Falso"}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -115,10 +114,18 @@ const Domande: FC<DomandeProps> = ({isItalian, url, codiceFiscale, passato,setPa
                                         {isItalian ? item.testo_italiano : item.testo_inglese}
                                     </td>
                                     <td>
-                                        <input type="radio" id={item.id_domanda.toString()} name={item.id_domanda.toString()} onChange={event => handleChange(event.target.checked, event.target.id)}/>
+                                        <input type="radio" id={item.id_domanda.toString() + " - Vero"}
+                                               name={item.id_domanda.toString()}
+                                               onChange={event => handleChange(event.target.checked, event.target.name)}
+                                               checked={risposte.lista.find((risposta) => risposta.id_domanda === item.id_domanda && risposta.risposta) !== undefined}
+                                        />
                                     </td>
                                     <td>
-                                        <input type="radio" id={item.id_domanda.toString()} name={item.id_domanda.toString()} onChange={event => handleChange(!event.target.checked, event.target.id)}/>
+                                        <input type="radio" id={item.id_domanda.toString() + " - Falso"}
+                                               name={item.id_domanda.toString()}
+                                               onChange={event => handleChange(!event.target.checked, event.target.name)}
+                                               checked={risposte.lista.find((risposta) => risposta.id_domanda === item.id_domanda && !risposta.risposta) !== undefined}
+                                        />
                                     </td>
                                 </tr>
                             ))
@@ -127,7 +134,7 @@ const Domande: FC<DomandeProps> = ({isItalian, url, codiceFiscale, passato,setPa
                     </table>
                 </div>
                 <div className={"d-flex justify-content-center"}>
-                        {<button className="btn btn-primary d-block w-25" type="submit">Invia risposte</button>}
+                    {<button className="btn btn-primary d-block w-25" type="submit">Invia risposte</button>}
                 </div>
             </form>
         </>

@@ -22,10 +22,12 @@ const DomandeAdminAdd: FC<{ url: string }> = ({url}) => {
         const POST_headers = {headers: {'Content-Type': 'application/json'}};
         const response = await axios.post(url + "api/Domande/",domanda,POST_headers);
         console.log(response.data);
-        if (response.status !== 200) {
-            alert("Errore");
+        if (response.status === 401)
+        {
+            window.location.href = "/";
+            alert("Sessione scaduta, effettua nuovamente il login");
         }
-        else {
+        else if (response.status === 200){
             alert("Domanda aggiunta");
             setTesto_italiano("");
             setTesto_inglese("");

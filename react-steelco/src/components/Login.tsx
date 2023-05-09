@@ -1,22 +1,40 @@
-import React from 'react';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
 interface LoginInizialeProps {
-    setCodiceFiscale: (codice_fiscale: string) => void;
-    codiceFiscale: string;
     url: string;
     isItalian: boolean;
 }
-const Login: React.FC<LoginInizialeProps> = ({setCodiceFiscale, url, codiceFiscale, isItalian}) => {
+const Login: React.FC<LoginInizialeProps> = ({url, isItalian}) => {
     const [password, setPassword] = useState('');
     const [nome, setNome] = useState('');
     const [cognome, setCognome] = useState('');
-    const [response, setResponse] = useState();
+    const [codiceFiscale, setCodiceFiscale] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    let loading_text:string;
+    if (isItalian)
+    {
+        loading_text = "Caricamento...";
+    }
+    else
+    {
+        loading_text = "Loading...";
+    }
 
+
+    if (localStorage.getItem("codice_fiscale") !== null) {
+        if(localStorage.getItem("passato") !== null)
+        {
+            window.location.href = "/result";
+        }
+        else
+        {
+            window.location.href = "/domande";
+        }
+    }
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         //Impostiamo gli headers
@@ -28,16 +46,15 @@ const Login: React.FC<LoginInizialeProps> = ({setCodiceFiscale, url, codiceFisca
             cognome: cognome,
             password: password
         };
+        setLoading(true);
         axios.post(url + "api/Utenti", dati, POST_headers)
-            .then(r => {
-            })
             .catch(e => {
-                setResponse(e);
-                console.log(response);
+                console.log(e);
                 return;
             });
-        console.log(codiceFiscale)
+        localStorage.setItem("codice_fiscale", codiceFiscale);
         navigate("/video");
+        setLoading(false);
     }
         return (
             <>
@@ -73,16 +90,20 @@ const Login: React.FC<LoginInizialeProps> = ({setCodiceFiscale, url, codiceFisca
                                             </div>
                                                 <input className="form-control" type="password" name="password" placeholder="Password" value={password} onChange={(event) => setPassword(event.target.value)} required={true}/>
                                             <div className="form-check text-center d-lg-flex justify-content-lg-center"
-                                                 style={{marginBottom: "10px", marginRight: 0}}>
+                                                 style={{marginBottom: "10px", marginRight: 0, marginTop: "10px"}}>
                                                 <input id="formCheck-1"
                                                        className="form-check-input"
                                                        type="checkbox"
                                                        required={true}/>
-                                                <a href={"https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"}><label className="form-check-label" htmlFor="formCheck-1" style={{marginLeft: "10px"}}>Leggi NDA</label></a>
+                                                <a href={"https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"} style={{marginLeft: "10px"}}><span className="form-check-label">{isItalian?"Leggi NDA":"Read NDA"}</span></a>
                                             </div>
                                             <div className="mb-3">
                                             </div>
-                                            <button className="btn btn-primary d-block w-100" type="submit">Login</button>
+                                            <button className="btn btn-primary d-block w-100" type="submit" disabled={loading}>
+                                                {loading ? <span className="spinner-border spinner-border-sm" role="status"
+                                                                 aria-hidden="true"></span> : <></>}
+                                                <span className="sr-only">{loading? loading_text: "Login"}</span>
+                                            </button>
                                         </form>
                                     </div>
                                 </div>
