@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "./NavBarLinks";
+
 interface NavBarProps {
     nomi_italiano: string[];
     nomi_inglese: string[];
@@ -24,11 +25,12 @@ const NavBar: React.FC<NavBarProps> = ({
                     <a className="navbar-brand d-flex align-items-center" href="https://www.steelcogroup.com/it/">
                         <img
                             src={"https://www.steelcogroup.com/app/uploads/2022/03/Logo-Steelco-Pantone-654C-MIELE-Group-Member-WHITE.png"}
-                            height={30} alt={"Steelco Logo"} style={{marginLeft: '10px'}}/>
+                            height={30} alt={"Steelco Logo"}/>
                     </a>
                     <button className="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navcol-6">
-                        <span className="visually-hidden">{isItalian?navigazione_italiano:navigazione_inglese}</span><span
-                        className="navbar-toggler-icon"></span>
+                        <span
+                            className="visually-hidden">{isItalian ? navigazione_italiano : navigazione_inglese}</span>
+                        <span className="navbar-toggler-icon"></span>
                     </button>
                     <div id="navcol-6" className="collapse navbar-collapse flex-grow-0 order-md-first">
                         <ul className="navbar-nav me-auto">
@@ -38,30 +40,35 @@ const NavBar: React.FC<NavBarProps> = ({
                         </ul>
                         {
                             setIsItalian !== undefined ?
-                            <div className="d-md-none my-2">
-                                <button className={isItalian ? "btn btn-primary me-2":"btn-light me-2"} type="button">Italiano</button>
-                                <button className={!isItalian ? "btn btn-primary me-2":"btn-light me-2"} type="button">Inglese</button>
-                            </div>:
-                            <div className="d-md-none my-2">
-                                <button className="btn btn-light me-2" type="button" style={{visibility: "hidden"}}>Italiano</button>
-                                <button className="btn btn-primary" type="button"style={{visibility: "hidden"}}>Inglese</button>
-                            </div>
+                                <div className="d-md-none my-2">
+                                    <button className={isItalian ? "btn btn-primary me-2" : "btn btn-light me-2"}
+                                            type="button" onClick={() => setIsItalian(true)}>Italiano
+                                    </button>
+                                    <button className={!isItalian ? "btn btn-primary me-2" : "btn btn-light me-2"}
+                                            type="button" onClick={() => setIsItalian(false)}>Inglese
+                                    </button>
+                                </div> :
+                                <></>
                         }
                     </div>
                     {
                         setIsItalian !== undefined ?
-                        <div className="d-none d-md-block">
-                            <a className={isItalian ? "btn btn-primary me-2":"btn btn-light me-2"} role="button" onClick={()=>setIsItalian(true)}>Italiano</a>
-                            <a className={!isItalian ? "btn btn-primary me-2":"btn btn-light me-2"} role="button" onClick={()=>setIsItalian(false)}>Inglese</a>
-                        </div>:
-                        <div className="d-none d-md-block">
-                            <a className="btn btn-light me-2" role="button" href="#" style={{visibility: "hidden"}}>Italiano</a>
-                            <a className="btn btn-light me-2" role="button" href="#" style={{visibility: "hidden"}}>Inglese</a>
-                        </div>
+                            <div className="d-none d-md-block">
+                                <a className={isItalian ? "btn btn-primary me-2" : "btn btn-light me-2"} role="button"
+                                   onClick={() => setIsItalian(true)}>Italiano</a>
+                                <a className={!isItalian ? "btn btn-primary me-2" : "btn btn-light me-2"} role="button"
+                                   onClick={() => setIsItalian(false)}>Inglese</a>
+                            </div> :
+                            <div className="d-none d-md-block">
+                                <a className="btn btn-light me-2" role="button" href="#"
+                                   style={{visibility: "hidden"}}>Italiano</a>
+                                <a className="btn btn-light me-2" role="button" href="#"
+                                   style={{visibility: "hidden"}}>Inglese</a>
+                            </div>
                     }
                 </div>
             </nav>
         </>
-        );
+    );
 };
 export default NavBar;

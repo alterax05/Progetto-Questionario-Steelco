@@ -4,12 +4,16 @@ import fail_image from '../assets/result-fail-icon.svg';
 import {Link} from "react-router-dom";
 
 interface ResultProps {
-    pass: boolean;
     isItalian: boolean;
 }
 
-const Result:React.FC<ResultProps> = ({pass,isItalian}) => {
-
+const Result:React.FC<ResultProps> = ({isItalian}) => {
+    if (localStorage.getItem("passato") === null)
+    {
+        window.location.href = "/";
+        alert("Devi prima effettuare il test");
+    }
+    const pass = localStorage.getItem("passato") === "true";
     var titolo: string;
     var testo: string;
     var bottone: string = "Riprova"

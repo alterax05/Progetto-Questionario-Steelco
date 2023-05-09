@@ -5,6 +5,7 @@ import {Domanda} from "./Domande";
 const DomandeAdminLista: FC<{ url: string }> = ({url}) => {
     const [ids, setIds] = useState<number[]>([]);
     const [domande, setDomande] = useState<Domanda[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -16,6 +17,7 @@ const DomandeAdminLista: FC<{ url: string }> = ({url}) => {
 
         const POST_headers = {headers: {'Content-Type': 'application/json'}};
 
+        setLoading(true)
         for (let id of ids) {
             const response = await axios.delete(url + "api/Domande/" + id, POST_headers);
             console.log(response.data);
@@ -25,6 +27,7 @@ const DomandeAdminLista: FC<{ url: string }> = ({url}) => {
         }
 
         setIds([]);
+        setLoading(false);
     }
 
     //Scarica le domande dal server
@@ -75,7 +78,9 @@ const DomandeAdminLista: FC<{ url: string }> = ({url}) => {
                                     <td>{item.testo_inglese}</td>
                                     <td>
                                         <input type="checkbox" id={item.id_domanda.toString()}
-                                               onChange={event => handleSelect(parseInt(event.target.id), event.target.checked)}/>
+                                               onChange={event => handleSelect(parseInt(event.target.id), event.target.checked)}
+                                               checked={ids.find(x => x === item.id_domanda) !== undefined}
+                                        />
                                     </td>
                                 </tr>
                             ))
@@ -83,7 +88,11 @@ const DomandeAdminLista: FC<{ url: string }> = ({url}) => {
                         </tbody>
                     </table>
                     <div className={"d-flex justify-content-center"}>
-                        <button className="btn btn-primary d-block w-25" type="submit">Esegui</button>
+                        <button className="btn btn-primary d-block w-25" type="submit" disabled={loading}>
+                            {loading ? <span className="spinner-border spinner-border-sm" role="status"
+                                             aria-hidden="true"></span> : <></>}
+                            <span className="sr-only">{loading? "Caricamento...": "Esegui"}</span>
+                        </button>
                     </div>
                 </div>
             </form>

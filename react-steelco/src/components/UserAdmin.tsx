@@ -11,6 +11,7 @@ interface User {
 const UserAdmin: FC<{ url: string }> = ({url}) => {
     const [ids, setIds] = useState<string[]>([]);
     const [user, setUser] = useState<User[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -19,23 +20,24 @@ const UserAdmin: FC<{ url: string }> = ({url}) => {
             alert("Seleziona almeno un utente");
             return;
         }
-
+        setLoading(false);
         const DELETE_headers = {headers: {'accept': '*/*'}};
         for (let id of ids) {
             const response = await axios.delete(url + "api/Utenti/" + encodeURIComponent(id), DELETE_headers);
             console.log(response.data);
-            if (response.status !== 200) {
+            if (response.status === 200) {
                 alert("Errore");
             }
         }
         setIds([]);
+        setLoading(true);
     }
 
     //Scarica gli utenti dal server
     useEffect(() => {
         fetch(url + "api/Utenti")
             .then(response => response.json())
-            .then(data => setUser(data));
+            .then(data => {setUser(data); setLoading(false);} );
     });
 
     const handleSelect = (id: string, checked: boolean) => {
@@ -78,8 +80,9 @@ const UserAdmin: FC<{ url: string }> = ({url}) => {
                                     <td>{item.cognome}</td>
                                     <td>{item.codice_fiscale}</td>
                                     <td>{item.punteggio}</td>
-                                    <td><input type="checkbox" id={item.codice_fiscale}
-                                               onChange={event => handleSelect(event.target.id, event.target.checked)}/>
+                                    <td>
+                                        <input type="checkbox" id={item.codice_fiscale}
+                                               onChange={event => handleSelect(event.target.id, event.target.checked)} checked={ids.find(x => x === item.codice_fiscale) !== undefined}/>
                                     </td>
                                 </tr>
                             ))
@@ -87,7 +90,11 @@ const UserAdmin: FC<{ url: string }> = ({url}) => {
                         </tbody>
                     </table>
                     <div className={"d-flex justify-content-center"}>
-                        <button className="btn btn-primary d-block w-25" type="submit">Esegui</button>
+                        <button className="btn btn-primary d-block w-100" type="submit" disabled={loading}>
+                            {loading ? <span className="spinner-border spinner-border-sm" role="status"
+                                             aria-hidden="true"></span> : <></>}
+                            <span className="sr-only">{loading? "Caricamento...": "Esegui"}</span>
+                        </button>
                     </div>
                 </div>
             </form>

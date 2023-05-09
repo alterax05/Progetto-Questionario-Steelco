@@ -1,19 +1,19 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Steelco App",
+  "name": "Questionario Steelco",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "https://www.steelcogroup.com/app/uploads/2021/10/favicon_steelco.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "https://www.steelcogroup.com/app/uploads/2021/10/favicon_steelco.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "https://www.steelcogroup.com/app/uploads/2021/10/favicon_steelco.png",
       "type": "image/png",
       "sizes": "512x512"
     }
