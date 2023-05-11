@@ -28,11 +28,11 @@ const Login: React.FC<LoginInizialeProps> = ({url, isItalian}) => {
     if (localStorage.getItem("codice_fiscale") !== null) {
         if(localStorage.getItem("passato") !== null)
         {
-            window.location.href = "/result";
+            navigate("/result")
         }
         else
         {
-            window.location.href = "/domande";
+            navigate("/domande")
         }
     }
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

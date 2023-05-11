@@ -87,13 +87,42 @@ const Domande: FC<DomandeProps> = ({isItalian, url, codiceFiscale}) => {
         console.log(risposte)
     }
 
+    function shuffle(array: Domanda[]) {
+        let currentIndex = array.length,  randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+
+            // Pick a remaining element.
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+
+            // And swap it with the current element.
+            [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+        }
+
+        return array;
+    }
+
     //Scarica le domande dal server
     useEffect(() => {
             fetch(url + "api/Domande")
                 .then(response => response.json())
-                .then(data => setDomande(data));
-        }
-    );
+                .then(data =>
+                {
+                    fetch(url + "api/Risposte/")
+                        .then(response => response.json())
+                        .then(max => {
+                            let domande = data;
+                            console.log(max);
+                            domande = shuffle(domande);
+                            domande = domande.slice(0,max);
+                            console.log(domande)
+                            setDomande(domande)
+                        })
+                });
+        },[]);
 
     return (<>
             <form style={{margin: "30px"}} method="post" onSubmit={handleSubmit}>

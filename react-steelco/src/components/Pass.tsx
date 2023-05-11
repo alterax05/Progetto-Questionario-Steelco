@@ -1,16 +1,17 @@
 import React from 'react';
 import pass_image from '../assets/result-pass-icon.svg';
 import fail_image from '../assets/result-fail-icon.svg';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 interface ResultProps {
     isItalian: boolean;
 }
 
 const Result:React.FC<ResultProps> = ({isItalian}) => {
+    const navigate = useNavigate();
     if (localStorage.getItem("passato") === null)
     {
-        window.location.href = "/";
+        navigate("/")
         alert("Devi prima effettuare il test");
     }
     const pass = localStorage.getItem("passato") === "true";

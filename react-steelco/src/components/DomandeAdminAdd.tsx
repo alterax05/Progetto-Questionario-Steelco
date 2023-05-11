@@ -1,11 +1,14 @@
 import React, {useState, FC} from "react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const DomandeAdminAdd: FC<{ url: string }> = ({url}) => {
 
     const [testo_italiano, setTesto_italiano] = useState<string>("");
     const [testo_inglese, setTesto_inglese] = useState<string>("");
     const [corretta, setCorretta] = useState<boolean>(true);
+    const navigate = useNavigate();
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -24,7 +27,7 @@ const DomandeAdminAdd: FC<{ url: string }> = ({url}) => {
         console.log(response.data);
         if (response.status === 401)
         {
-            window.location.href = "/";
+            navigate("/")
             alert("Sessione scaduta, effettua nuovamente il login");
         }
         else if (response.status === 200){

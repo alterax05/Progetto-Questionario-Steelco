@@ -5,7 +5,7 @@ const YoutubeVideoEncoder: React.FC<{id?: string}> = ({id = "-1wcilQ58hI"}) => {
     const navigate = useNavigate();
     if (localStorage.getItem("codice_fiscale") === null) {
         alert("Devi prima effettuare il login")
-        window.location.href = "/";
+        navigate("/");
         return <></>;
     }
     return (

@@ -15,7 +15,7 @@ const DomandePage:FC<DomandeProps> = ({isItalian, url_api}) => {
 
     if (localStorage.getItem("codice_fiscale") === null) {
         alert("Devi prima effettuare il login")
-        window.location.href = "/";
+        navigate("/")
         return <></>;
     }
     else
